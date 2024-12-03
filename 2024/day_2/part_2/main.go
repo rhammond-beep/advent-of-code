@@ -72,7 +72,7 @@ func (r *Report) CanDampenerMakeSafe() bool {
 
 	for i := 0; i < len(r.Levels); i++ {
 		fresh_slice := make([]int, len(r.Levels))
-		copy(fresh_slice, r.Levels)
+		copy(fresh_slice, r.Levels) // If I don't do this, the Flipping original Levels on the struct get's updated... ? Why tho
 		all_bar_one := Report{Levels: deleteElement(fresh_slice, i)}
 		if all_bar_one.IsReportSafe() {
 			dampener_made_safe = true

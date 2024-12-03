@@ -13,18 +13,39 @@ type Report struct {
 	levels []int
 }
 
+/*
+A report is only considered safe if both of the following are true:
+1) The levels are either all increasing or all descreasing
+2) Any two adjacent levels differ by at least one and at most three.
+*/
 func (r *Report) IsReportSafe() bool {
 	safe := true
 
+	if len(r.levels) == 1 {
+		return safe
+	}
+
 	for i := 1; i < len(r.levels)-1; i++ {
 		left_comparison := math.Abs(float64(r.levels[i] - r.levels[i-1]))
-		if left_comparison < 1 || left_comparison > 3 {
+		if left_comparison < 1.0 || left_comparison > 3.0 {
 			safe = false
 			break
 		}
 
 		right_comparison := math.Abs(float64(r.levels[i] - r.levels[i+1]))
-		if right_comparison < 1 || right_comparison > 3 {
+		if right_comparison < 1.0 || right_comparison > 3.0 {
+			safe = false
+			break
+		}
+
+		// Catch Peak
+		if r.levels[i-1] <= r.levels[i] && r.levels[i] >= r.levels[i+1] {
+			safe = false
+			break
+		}
+
+		// Catch Trough
+		if r.levels[i-1] >= r.levels[i] && r.levels[i] <= r.levels[i+1] {
 			safe = false
 			break
 		}

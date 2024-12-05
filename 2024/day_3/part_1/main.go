@@ -27,10 +27,8 @@ So the stages of this one seem pretty simple:
  3. Apply the multiplications and sum the result.
 */
 func main() {
-	var scanner Scanner
-	scanner = &CorruptedScanner{input: ReadChallengeInput("../day_3_input.txt")}
-	tokens := scanner.ScanTokens()
-	fmt.Println(tokens)
+	input := ReadChallengeInput("../day_3_input.txt")
+
 }
 
 func ReadChallengeInput(filepath string) string {
@@ -49,16 +47,34 @@ func ReadChallengeInput(filepath string) string {
 }
 
 type CorruptedScanner struct {
-	input   string
-	pointer int
+	input    string
+	position int
 }
 
-func (c *CorruptedScanner) ScanTokens() []Token {
+/*
+	this approach will take too long, it's not really what i'm going here for at all,
 
+# Should just use a quick and dirty regex approach
+
+Scan through the input string and perform lexical analysis stage
+We only want to parse over useful characters, discarding everything else
+at this stage, we just want to capture the accuracte representation of valid tokens, nothing else ( we just chuck out
+everything that's not
+*/
+func (c *CorruptedScanner) ScanTokens() []Token {
+	var validTokens []Token
+	for _, character := range strings.Split(c.input, "") {
+		switch character {
+		}
+	}
+	return validTokens
 }
 
 type Token struct {
-	name string
+	tokenType string
+	lexeme    string
+	value     string
+	line      int
 }
 
 type Scanner interface {

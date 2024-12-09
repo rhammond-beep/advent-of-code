@@ -37,9 +37,10 @@ func main() {
 	var tokensToProcess []*Token
 
 	multiply_re := regexp.MustCompile(`mul\((\d{1,3}),(\d{1,3})\)`) // Use extra parenthesis to created nested match groups
-	multiply_matches_index := multiply_re.FindAllStringIndex(input, -1)
+	multiply_matches_index := multiply_re.FindAllStringSubmatchIndex(input, -1)
 
 	for _, match := range multiply_matches_index {
+		// calculateValue := extractInt(input[match[1][0]:match[1][1]]) * extractInt(input[match[1][0]:match[1][1]])
 		tokensToProcess = append(tokensToProcess, &Token{TokenType: "mult", Position: match[0]})
 	}
 
@@ -55,12 +56,27 @@ func main() {
 		tokensToProcess = append(tokensToProcess, &Token{TokenType: "dont", Position: dont[0]})
 	}
 
-	sort.Sort(SortToken(tokensToProcess))
+	sort.Sort(SortToken(tokensToProcess)) // get the tokens in the correct order.
 
-	for _, token := range tokensToProcess {
-		fmt.Println(token.String())
+	processTokens(tokensToProcess)
+
+}
+
+/*
+Accept a sequence (sorted slice) of tokens to perform multiplication operations on
+*/
+func processTokens(tokens []*Token) {
+	shouldPerformMultiply := true
+
+	for _, token := range tokens {
+		if token.TokenType == "do" { // I need a way of indexing back into the string and extracting
+			shouldPerformMultiply = true
+		} else if token.TokenType == "dont" {
+			shouldPerformMultiply = false
+		} else if token.TokenType == "multiply" && shouldPerformMultiply {
+			// Index back into the
+		}
 	}
-
 }
 
 type Token struct {

@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -21,14 +23,33 @@ Because the program's memory has been corrupted, there are also many invalid cha
 Sequences like mul(4*, mul(6,9!, ?(12,34) or mul (2, 4) do nothing.
 
 So the stages of this one seem pretty simple:
- 1. As always process the input, in this case, just go line by line, appending the strings into one structure
- 2. Create a Scanner class, which Parses out valid tokens, essentially we're looking anything which meets a valid regular expression.
-    I don't think I'll do it like that though as I'd like to implement some kind of recursive decent parser..., although that could well just be overkill.
- 3. Apply the multiplications and sum the result.
+
+ 1. We have a strict pattern to adehere to, which can be defined as a regular expression.
+
+ 2. This will then form the basis of the input to the following phase, parsing the sanatised resultant expressions
+    to extract out integers from the string to perform the operation on
+
+ 3. perform the operations.
 */
 func main() {
 	input := ReadChallengeInput("../day_3_input.txt")
+	multiply_re := regexp.MustCompile(`mul\((\d{1,3}),(\d{1,3})\)`) // Use extra parenthesis to created nested match groups
+	multiply_matches := multiply_re.FindAllStringSubmatch(input, -1)
 
+	sum := 0
+
+	for _, match := range multiply_matches {
+		sum += extractInt(string(match[1])) * extractInt(string(match[2]))
+	}
+	fmt.Println(sum)
+}
+
+func extractInt(s string) int {
+	i, err := strconv.ParseInt(s, 10, 0)
+	if err != nil {
+		os.Exit(-1)
+	}
+	return int(i)
 }
 
 func ReadChallengeInput(filepath string) string {

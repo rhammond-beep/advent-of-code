@@ -26,9 +26,11 @@ func main() {
 
 	hs := HorizontalSearch{}
 	vs := VerticalSearch{}
+	ds := DiagonalSearch{}
 
 	occurrences += hs.FindTermOccurrences(wordSearch)
 	occurrences += vs.FindTermOccurrences(wordSearch)
+	occurrences += ds.FindTermOccurrences(wordSearch)
 
 	fmt.Println(occurrences)
 
@@ -70,6 +72,9 @@ type HorizontalSearch struct {
 type VerticalSearch struct {
 }
 
+type DiagonalSearch struct {
+}
+
 /*
 check each row for any occuring instances of the search term
 */
@@ -77,7 +82,7 @@ func (hs *HorizontalSearch) FindTermOccurrences(ws *WordSearch) (occurrences int
 	ub := len(ws.SearchTerm)
 	for _, row := range ws.SearchSpace {
 		// For each row, split up into chunks based on the length of the target word
-		for i := ub; i < len(row)-ub; i += ub {
+		for i := ub; i < len(row)-ub; i += 1 {
 			word := row[i-ub : i]
 			if word == ws.SearchTerm {
 				occurrences += 1
@@ -96,18 +101,24 @@ func (hs *HorizontalSearch) FindTermOccurrences(ws *WordSearch) (occurrences int
 func (vs *VerticalSearch) FindTermOccurrences(ws *WordSearch) (occurrences int) {
 	ub := len(ws.SearchTerm)
 	columns := ws.SearchSpace[0]
-
 	for i := 0; i < len(columns); i += 1 {
 		offset := 0
 		var sb strings.Builder
 		for j := offset; j < (offset + ub); j += 1 {
 			sb.WriteByte(ws.SearchSpace[j][i])
 		}
-		offset += ub
+		offset += 1
 		if sb.String() == ws.SearchTerm {
 			occurrences += 1
 		}
 	}
+
+	return
+}
+
+/*
+ */
+func (ds *DiagonalSearch) FindTermOccurrences(ws *WordSearch) (occurrences int) {
 
 	return
 }

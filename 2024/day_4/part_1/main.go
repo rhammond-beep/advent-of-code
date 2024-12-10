@@ -10,10 +10,19 @@ import (
 
 /*
 Day 4 - Ceres Search
+
+	Lets do a word search, words are allowed to be:
+	1) Horizontal
+	2) Vertical
+	3) diagonal
+	4) wirtten backwards
+	5) Overlapping other words
+
+	Find all the valid instances of "XMAS" within the search space.
 */
 func main() {
-	input := ReadChallengeInput("../day_4_input.txt")
-	fmt.Println(input)
+	wordSearch := &WordSearch{SearchSpace: ReadChallengeInput("../day_4_input.txt"), SearchTerm: "XMAS"}
+
 }
 
 func extractInt(s string) int {
@@ -24,7 +33,7 @@ func extractInt(s string) int {
 	return int(i)
 }
 
-func ReadChallengeInput(filepath string) string {
+func ReadChallengeInput(filepath string) (searchSpace []string) {
 	file, err := os.Open(filepath)
 	if err != nil {
 		panic(err)
@@ -32,9 +41,23 @@ func ReadChallengeInput(filepath string) string {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	var sb strings.Builder
 	for scanner.Scan() {
-		sb.WriteString(scanner.Text())
+		searchSpace = append(searchSpace, scanner.Text())
 	}
-	return sb.String()
+	return
+}
+
+/*
+interface for specifying a strategy for finding a term within the search space
+*/
+type SearchStrategy interface {
+	FindTermOccurrences(ws *WordSearch) int
+}
+
+/*
+helper type for representing a WordSearch to be undertaken
+*/
+type WordSearch struct {
+	SearchSpace []string
+	SearchTerm  string
 }

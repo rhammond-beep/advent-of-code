@@ -34,14 +34,15 @@ So the stages of this one seem pretty simple:
 */
 func main() {
 	input := ReadChallengeInput("../day_3_input.txt")
+	fmt.Println(input)
 	var tokensToProcess []*Token
 
 	multiply_re := regexp.MustCompile(`mul\((\d{1,3}),(\d{1,3})\)`) // Use extra parenthesis to created nested match groups
 	multiply_matches_index := multiply_re.FindAllStringSubmatchIndex(input, -1)
 
 	for _, match := range multiply_matches_index {
-		// calculateValue := extractInt(input[match[1][0]:match[1][1]]) * extractInt(input[match[1][0]:match[1][1]])
-		tokensToProcess = append(tokensToProcess, &Token{TokenType: "mult", Position: match[0]})
+		calculatedValue := extractInt(input[match[2]:match[3]]) * extractInt(input[match[4]:match[5]])
+		tokensToProcess = append(tokensToProcess, &Token{TokenType: "mult", Position: match[0], Value: calculatedValue})
 	}
 
 	do_re := regexp.MustCompile(`do()`)
@@ -66,6 +67,7 @@ func main() {
 Accept a sequence (sorted slice) of tokens to perform multiplication operations on
 */
 func processTokens(tokens []*Token) {
+	sum := 0
 	shouldPerformMultiply := true
 
 	for _, token := range tokens {
@@ -73,15 +75,16 @@ func processTokens(tokens []*Token) {
 			shouldPerformMultiply = true
 		} else if token.TokenType == "dont" {
 			shouldPerformMultiply = false
-		} else if token.TokenType == "multiply" && shouldPerformMultiply {
-			// Index back into the
+		} else if token.TokenType == "mult" && shouldPerformMultiply {
+			sum += token.Value
 		}
 	}
+	fmt.Println(sum)
 }
 
 type Token struct {
 	TokenType string
-	Value     string
+	Value     int
 	Position  int
 }
 

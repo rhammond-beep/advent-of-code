@@ -33,7 +33,6 @@ func main() {
 	occurrences += ds.FindTermOccurrences(wordSearch)
 
 	fmt.Println(occurrences)
-
 }
 
 func extractInt(s string) int {
@@ -117,8 +116,32 @@ func (vs *VerticalSearch) FindTermOccurrences(ws *WordSearch) (occurrences int) 
 }
 
 /*
- */
+let i = index into column
+let j = index into row
+starting in the bottom left hand corner of the array, i == len(ws.SearchSpace) - len(ws.SearchTerm)
+set j = 0
+
+	iterate up until j = ub
+
+decrement i
+*/
 func (ds *DiagonalSearch) FindTermOccurrences(ws *WordSearch) (occurrences int) {
+
+	for k := 0; k < len(ws.SearchSpace)-len(ws.SearchTerm); k++ {
+		for j := 0; j <= k; j++ {
+			i := k - j
+			fmt.Print(string(ws.SearchSpace[i][j]))
+		}
+		fmt.Println()
+	}
+
+	for k := len(ws.SearchSpace) - len(ws.SearchTerm); k >= 0; k-- {
+		for j := 0; j <= k; j++ {
+			i := k - j
+			fmt.Print(string(ws.SearchSpace[i][j]))
+		}
+		fmt.Println()
+	}
 
 	return
 }

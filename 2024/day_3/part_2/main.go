@@ -34,9 +34,7 @@ So the stages of this one seem pretty simple:
 */
 func main() {
 	input := ReadChallengeInput("../day_3_input.txt")
-	fmt.Println(input)
 	var tokensToProcess []*Token
-
 	multiply_re := regexp.MustCompile(`mul\((\d{1,3}),(\d{1,3})\)`) // Use extra parenthesis to created nested match groups
 	multiply_matches_index := multiply_re.FindAllStringSubmatchIndex(input, -1)
 
@@ -45,13 +43,13 @@ func main() {
 		tokensToProcess = append(tokensToProcess, &Token{TokenType: "mult", Position: match[0], Value: calculatedValue})
 	}
 
-	do_re := regexp.MustCompile(`do()`)
+	do_re := regexp.MustCompile(`do\(\)`)
 	dos := do_re.FindAllStringIndex(input, -1)
 	for _, do := range dos {
 		tokensToProcess = append(tokensToProcess, &Token{TokenType: "do", Position: do[0]})
 	}
 
-	dont_re := regexp.MustCompile(`don't()`)
+	dont_re := regexp.MustCompile(`don't\(\)`)
 	donts := dont_re.FindAllStringIndex(input, -1)
 	for _, dont := range donts {
 		tokensToProcess = append(tokensToProcess, &Token{TokenType: "dont", Position: dont[0]})
@@ -69,14 +67,17 @@ Accept a sequence (sorted slice) of tokens to perform multiplication operations 
 func processTokens(tokens []*Token) {
 	sum := 0
 	shouldPerformMultiply := true
-
 	for _, token := range tokens {
-		if token.TokenType == "do" { // I need a way of indexing back into the string and extracting
+		switch token.TokenType {
+
+		case "do":
 			shouldPerformMultiply = true
-		} else if token.TokenType == "dont" {
+		case "dont":
 			shouldPerformMultiply = false
-		} else if token.TokenType == "mult" && shouldPerformMultiply {
-			sum += token.Value
+		case "mult":
+			if shouldPerformMultiply {
+				sum += token.Value
+			}
 		}
 	}
 	fmt.Println(sum)

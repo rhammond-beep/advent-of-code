@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	// "strings"
 )
 
@@ -24,13 +25,13 @@ func main() {
 	wordSearch := &WordSearch{SearchSpace: ReadChallengeInput("../day_4_input.txt"), SearchTerm: "XMAS"}
 	occurrences := 0
 
-	//hs := HorizontalSearch{}
+	hs := HorizontalSearch{}
 	vs := VerticalSearch{}
-	//ds := DiagonalSearch{}
+	ds := DiagonalSearch{}
 
-	//	occurrences += hs.FindTermOccurrences(wordSearch)
+	occurrences += hs.FindTermOccurrences(wordSearch)
 	occurrences += vs.FindTermOccurrences(wordSearch)
-	//	occurrences += ds.FindTermOccurrences(wordSearch)
+	occurrences += ds.FindTermOccurrences(wordSearch)
 
 	fmt.Println(occurrences)
 }
@@ -94,13 +95,21 @@ func (hs *HorizontalSearch) FindTermOccurrences(ws *WordSearch) (occurrences int
 /*
  */
 func (vs *VerticalSearch) FindTermOccurrences(ws *WordSearch) (occurrences int) {
+	mappedSearchSpace := make([]string, len(ws.SearchSpace))
+
+	// Map to a horizontal space
 	for i := 0; i < len(ws.SearchSpace); i++ {
+		var sb strings.Builder
 		for j := 0; j < len(ws.SearchSpace); j++ {
-			fmt.Print(string(ws.SearchSpace[j][i]))
+			sb.WriteByte(ws.SearchSpace[j][i])
 		}
-		fmt.Println()
+		mappedSearchSpace = append(mappedSearchSpace, sb.String())
 	}
-	return
+
+	hs := &HorizontalSearch{}
+	mappedSearch := &WordSearch{SearchSpace: mappedSearchSpace, SearchTerm: ws.SearchTerm}
+
+	return hs.FindTermOccurrences(mappedSearch)
 }
 
 /*

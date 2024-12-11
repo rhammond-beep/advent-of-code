@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
+	// "strings"
 )
 
 /*
@@ -24,13 +24,13 @@ func main() {
 	wordSearch := &WordSearch{SearchSpace: ReadChallengeInput("../day_4_input.txt"), SearchTerm: "XMAS"}
 	occurrences := 0
 
-	hs := HorizontalSearch{}
+	//hs := HorizontalSearch{}
 	vs := VerticalSearch{}
-	ds := DiagonalSearch{}
+	//ds := DiagonalSearch{}
 
-	occurrences += hs.FindTermOccurrences(wordSearch)
+	//	occurrences += hs.FindTermOccurrences(wordSearch)
 	occurrences += vs.FindTermOccurrences(wordSearch)
-	occurrences += ds.FindTermOccurrences(wordSearch)
+	//	occurrences += ds.FindTermOccurrences(wordSearch)
 
 	fmt.Println(occurrences)
 }
@@ -81,7 +81,7 @@ func (hs *HorizontalSearch) FindTermOccurrences(ws *WordSearch) (occurrences int
 	ub := len(ws.SearchTerm)
 	for _, row := range ws.SearchSpace {
 		// For each row, split up into chunks based on the length of the target word
-		for i := ub; i < len(row)-ub; i += 1 {
+		for i := ub; i < len(row)+1; i += 1 {
 			word := row[i-ub : i]
 			if word == ws.SearchTerm {
 				occurrences += 1
@@ -94,18 +94,11 @@ func (hs *HorizontalSearch) FindTermOccurrences(ws *WordSearch) (occurrences int
 /*
  */
 func (vs *VerticalSearch) FindTermOccurrences(ws *WordSearch) (occurrences int) {
-	ub := len(ws.SearchTerm)
-	columns := ws.SearchSpace[0]
-	for i := 0; i < len(columns); i += 1 {
-		for j := 0; j < len(ws.SearchSpace); j += 1 {
-			var sb strings.Builder
-			for k := j; k < (j + ub); k++ {
-				sb.WriteByte(ws.SearchSpace[j][i])
-			}
-			if sb.String() == ws.SearchTerm {
-				occurrences += 1
-			}
+	for i := 0; i < len(ws.SearchSpace); i++ {
+		for j := 0; j < len(ws.SearchSpace); j++ {
+			fmt.Print(string(ws.SearchSpace[j][i]))
 		}
+		fmt.Println()
 	}
 	return
 }

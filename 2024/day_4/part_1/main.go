@@ -92,26 +92,21 @@ func (hs *HorizontalSearch) FindTermOccurrences(ws *WordSearch) (occurrences int
 }
 
 /*
-	 for each character in the column
-		Take the next n characters.
-		Check if they match the search term
-			if yes, increment occurrences
-*/
+ */
 func (vs *VerticalSearch) FindTermOccurrences(ws *WordSearch) (occurrences int) {
 	ub := len(ws.SearchTerm)
 	columns := ws.SearchSpace[0]
 	for i := 0; i < len(columns); i += 1 {
-		offset := 0
-		var sb strings.Builder
-		for j := offset; j < (offset + ub); j += 1 {
-			sb.WriteByte(ws.SearchSpace[j][i])
-		}
-		offset += 1
-		if sb.String() == ws.SearchTerm {
-			occurrences += 1
+		for j := 0; j < len(ws.SearchSpace); j += 1 {
+			var sb strings.Builder
+			for k := j; k < (j + ub); k++ {
+				sb.WriteByte(ws.SearchSpace[j][i])
+			}
+			if sb.String() == ws.SearchTerm {
+				occurrences += 1
+			}
 		}
 	}
-
 	return
 }
 
@@ -142,24 +137,23 @@ Feels like I shouldn't have to do this preprocessing stage though... Feels prett
 I'd prefer to just do the work as part of the original loop.
 */
 func (ds *DiagonalSearch) FindTermOccurrences(ws *WordSearch) (occurrences int) {
-	var diagonals [][]int
-
-	for k := len(ws.SearchTerm) - 1; k < len(ws.SearchSpace); k++ {
-		offset := len(ws.SearchTerm)
-		for j := 0; j <= k; j++ {
-			i := k - j
-			// ws.SearchSpace[i][j])
-		}
-	}
-
-	for k := len(ws.SearchSpace); k > len(ws.SearchTerm)-1; k-- {
-		for j := 0; j <= k; j++ {
-			i := k - j
-			// ws.SearchSpace[i][j])
-		}
-		fmt.Println()
-	}
-
+	//	var diagonals [][]int
+	//
+	//	for k := len(ws.SearchTerm) - 1; k < len(ws.SearchSpace); k++ {
+	//		offset := len(ws.SearchTerm)
+	//		for j := 0; j <= k; j++ {
+	//			i := k - j
+	//			// ws.SearchSpace[i][j])
+	//		}
+	//	}
+	//
+	//	for k := len(ws.SearchSpace); k > len(ws.SearchTerm)-1; k-- {
+	//		for j := 0; j <= k; j++ {
+	//			i := k - j
+	//			// ws.SearchSpace[i][j])
+	//		}
+	//	}
+	//
 	return
 }
 

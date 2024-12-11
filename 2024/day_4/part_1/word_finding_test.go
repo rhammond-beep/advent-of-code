@@ -51,5 +51,25 @@ func TestHorizontalSearch(t *testing.T) {
 }
 
 func TestDiagonalSearch(t *testing.T) {
+	searchSpace := []string{
+		"X.........",
+		".M........",
+		"..A.......",
+		"...S......",
+		"XXMASSSSS.",
+		"..X.......",
+		"...M......",
+		"....A.....",
+		".....SMAS.",
+		"XMAS..S...",
+	}
+	number_of_occurrences_wanted := 2
 
+	wordSearch := &WordSearch{SearchSpace: searchSpace, SearchTerm: "XMAS"}
+	ds := &DiagonalSearch{}
+	occurrences := ds.FindTermOccurrences(wordSearch)
+
+	if number_of_occurrences_wanted != occurrences {
+		t.Fatalf("Incorrect number of occurrences found in vertical search\nwanted: %v\nactual: %v", number_of_occurrences_wanted, occurrences)
+	}
 }

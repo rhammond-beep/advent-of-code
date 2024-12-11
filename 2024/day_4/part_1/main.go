@@ -23,6 +23,7 @@ Day 4 - Ceres Search
 */
 func main() {
 	wordSearch := &WordSearch{SearchSpace: ReadChallengeInput("../day_4_input.txt"), SearchTerm: "XMAS"}
+	reversedSearch := &WordSearch{SearchSpace: ReadChallengeInput("../day_4_input.txt"), SearchTerm: "SAMX"}
 	occurrences := 0
 
 	hs := HorizontalSearch{}
@@ -32,6 +33,9 @@ func main() {
 	occurrences += hs.FindTermOccurrences(wordSearch)
 	occurrences += vs.FindTermOccurrences(wordSearch)
 	occurrences += ds.FindTermOccurrences(wordSearch)
+	occurrences += hs.FindTermOccurrences(reversedSearch)
+	occurrences += vs.FindTermOccurrences(reversedSearch)
+	occurrences += ds.FindTermOccurrences(reversedSearch)
 
 	fmt.Println(occurrences)
 }
@@ -139,24 +143,29 @@ Feels like I shouldn't have to do this preprocessing stage though... Feels prett
 I'd prefer to just do the work as part of the original loop.
 */
 func (ds *DiagonalSearch) FindTermOccurrences(ws *WordSearch) (occurrences int) {
-	//	var diagonals [][]int
-	//
-	//	for k := len(ws.SearchTerm) - 1; k < len(ws.SearchSpace); k++ {
-	//		offset := len(ws.SearchTerm)
-	//		for j := 0; j <= k; j++ {
-	//			i := k - j
-	//			// ws.SearchSpace[i][j])
-	//		}
-	//	}
-	//
-	//	for k := len(ws.SearchSpace); k > len(ws.SearchTerm)-1; k-- {
-	//		for j := 0; j <= k; j++ {
-	//			i := k - j
-	//			// ws.SearchSpace[i][j])
-	//		}
-	//	}
-	//
-	return
+	mappedSearchSpace := make([]string, len(ws.SearchSpace))
+
+	for k := 0; k < len(ws.SearchSpace)+1; k++ {
+		var sb strings.Builder
+		for j := 0; j <= k; j++ {
+			i := k - j
+			sb.WriteByte(ws.SearchSpace[i][j])
+		}
+		mappedSearchSpace = append(mappedSearchSpace, sb.String())
+	}
+
+	for k := len(ws.SearchSpace); k >= 0; k-- {
+		var sb strings.Builder
+		for j := 0; j <= k; j++ {
+			i := k - j
+			sb.WriteByte(ws.SearchSpace[i][j])
+		}
+		mappedSearchSpace = append(mappedSearchSpace, sb.String())
+	}
+
+	mappedWordSearch := &WordSearch{SearchSpace: mappedSearchSpace, SearchTerm: ws.SearchTerm}
+	hs := HorizontalSearch{}
+	return hs.FindTermOccurrences(mappedWordSearch)
 }
 
 /*

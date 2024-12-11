@@ -46,7 +46,7 @@ func TestHorizontalSearch(t *testing.T) {
 	occurrences := hs.FindTermOccurrences(wordSearch)
 
 	if number_of_occurrences_wanted != occurrences {
-		t.Fatalf("Incorrect number of occurrences found in vertical search\nwanted: %v\nactual: %v", number_of_occurrences_wanted, occurrences)
+		t.Fatalf("Incorrect number of occurrences found in horizontal search\nwanted: %v\nactual: %v", number_of_occurrences_wanted, occurrences)
 	}
 }
 
@@ -70,6 +70,6 @@ func TestDiagonalSearch(t *testing.T) {
 	occurrences := ds.FindTermOccurrences(wordSearch)
 
 	if number_of_occurrences_wanted != occurrences {
-		t.Fatalf("Incorrect number of occurrences found in vertical search\nwanted: %v\nactual: %v", number_of_occurrences_wanted, occurrences)
+		t.Fatalf("Incorrect number of occurrences found in diagonal search\nwanted: %v\nactual: %v", number_of_occurrences_wanted, occurrences)
 	}
 }

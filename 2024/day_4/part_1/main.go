@@ -99,7 +99,7 @@ func (hs *HorizontalSearch) FindTermOccurrences(ws *WordSearch) (occurrences int
 /*
  */
 func (vs *VerticalSearch) FindTermOccurrences(ws *WordSearch) (occurrences int) {
-	mappedSearchSpace := make([]string, len(ws.SearchSpace))
+	var mappedSearchSpace []string
 
 	// Map to a horizontal space
 	for i := 0; i < len(ws.SearchSpace); i++ {
@@ -143,9 +143,9 @@ Feels like I shouldn't have to do this preprocessing stage though... Feels prett
 I'd prefer to just do the work as part of the original loop.
 */
 func (ds *DiagonalSearch) FindTermOccurrences(ws *WordSearch) (occurrences int) {
-	mappedSearchSpace := make([]string, len(ws.SearchSpace))
+	var mappedSearchSpace []string
 
-	for k := 0; k < len(ws.SearchSpace)+1; k++ {
+	for k := 0; k < len(ws.SearchSpace)-1; k++ {
 		var sb strings.Builder
 		for j := 0; j <= k; j++ {
 			i := k - j
@@ -154,7 +154,7 @@ func (ds *DiagonalSearch) FindTermOccurrences(ws *WordSearch) (occurrences int) 
 		mappedSearchSpace = append(mappedSearchSpace, sb.String())
 	}
 
-	for k := len(ws.SearchSpace); k >= 0; k-- {
+	for k := len(ws.SearchSpace) - 1; k > 0; k-- {
 		var sb strings.Builder
 		for j := 0; j <= k; j++ {
 			i := k - j

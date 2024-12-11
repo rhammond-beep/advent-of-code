@@ -6,20 +6,10 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	// "strings"
 )
 
 /*
 Day 4 - Ceres Search
-
-	Lets do a word search, words are allowed to be:
-	1) Horizontal
-	2) Vertical
-	3) diagonal
-	4) wirtten backwards
-	5) Overlapping other words
-
-	Find all the valid instances of "XMAS" within the search space.
 */
 func main() {
 	wordSearch := &WordSearch{SearchSpace: ReadChallengeInput("../day_4_input.txt"), SearchTerm: "XMAS"}
@@ -157,6 +147,24 @@ func (ds *DiagonalSearch) FindTermOccurrences(ws *WordSearch) (occurrences int) 
 	for k := len(ws.SearchSpace) - 1; k > 0; k-- {
 		var sb strings.Builder
 		for j := 0; j <= k; j++ {
+			i := k - j
+			sb.WriteByte(ws.SearchSpace[i][j])
+		}
+		mappedSearchSpace = append(mappedSearchSpace, sb.String())
+	}
+
+	for k := 0; k < len(ws.SearchSpace)-1; k++ {
+		var sb strings.Builder
+		for j := len(ws.SearchSpace) - 1; j >= k; j-- {
+			i := j - k
+			sb.WriteByte(ws.SearchSpace[i][j])
+		}
+		mappedSearchSpace = append(mappedSearchSpace, sb.String())
+	}
+
+	for k := len(ws.SearchSpace) - 1; k > 0; k-- {
+		var sb strings.Builder
+		for j := k; j > 0; j-- {
 			i := k - j
 			sb.WriteByte(ws.SearchSpace[i][j])
 		}

@@ -52,10 +52,10 @@ func TestHorizontalSearch(t *testing.T) {
 
 func TestDiagonalSearch(t *testing.T) {
 	searchSpace := []string{
-		"X.........",
-		".M........",
-		"..A.......",
-		"...S......",
+		"X........X",
+		".M......M.",
+		"..A....A..",
+		"...S..S...",
 		"XXMASSSSS.",
 		"..X.......",
 		"...M......",

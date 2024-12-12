@@ -10,13 +10,15 @@ import (
 func main() {
 	update_instructions := ReadChallengeInput("../page_ordering_rules.txt")
 	// ordering_rules := ReadChallengeInput("../update_orders.txt")
-	// var priority_map map[int][]int
+	priority_map := make(map[int][]int, len(update_instructions))
 
 	// populate the map
 	for _, instruction := range update_instructions {
-		before := instruction[0:2]
-		after := instruction[3:5]
-		fmt.Printf("before: %v, after: %v\n", before, after)
+		before := extractInt(instruction[0:2])
+		after := extractInt(instruction[3:5])
+
+		priority_map[before] = append(priority_map[before], after)
+		fmt.Printf("key %v, map: %v\n", before, priority_map[before])
 	}
 }
 

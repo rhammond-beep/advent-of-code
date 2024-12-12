@@ -1,0 +1,28 @@
+final map: 
+map[
+	13:[97 61 29 47 75 53] 
+	29:[75 97 53 61 47] 
+	47:[97 75] 
+	53:[47 75 61 97] 
+	61:[97 47 75] 
+	75:[97]
+]
+
+75,47,61,53,29
+97,61,53,29,13
+75,29,13
+75,97,47,61,53
+61,13,29
+97,13,75,29,47
+
+keys in the map represent print numbers E:G 13,
+
+The coorresponding array is the integers in the sequence which can come after it.
+
+The issue here is that a given print sequence might just straight up miss a page in question.
+
+So the first line is okay because all of the pages are present in the update
+
+this makes a naive check against the list of permitted elements pointless... I'm braindead right now, do something different.
+
+

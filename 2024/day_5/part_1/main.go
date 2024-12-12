@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 )
 
 /*
@@ -59,9 +60,20 @@ func main() {
 
 	fmt.Printf("final map: %v\n", priority_map)
 
+	sum := 0
+
 	for _, instruction := range update_instructions {
-		fmt.Println(instruction)
+		update_instructions_to_process := strings.Split(instruction, ",")
+		valid_instructions := true
+		for _, i_element := range update_instructions_to_process {
+			fmt.Println(i_element)
+		}
+		if valid_instructions {
+			sum += extractInt(update_instructions_to_process[len(update_instructions_to_process)/2])
+		}
 	}
+
+	fmt.Printf("sum of lines: %v", sum)
 }
 
 func ReadChallengeInput(filepath string) (fileContents []string) {

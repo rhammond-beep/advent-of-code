@@ -4,63 +4,48 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
 )
 
 func main() {
-	// input := ReadChallengeInput("../day_4_input.txt")
-	input := []string{
-		"M.S",
-		".A.",
-		"M.S",
-	}
+	input := ReadChallengeInput("../day_4_input.txt")
+	// input := []string{
+	// 	".M.S......",
+	// 	"..A..MSMS.",
+	// 	".M.S.MAA..",
+	// 	"..A.ASMSM.",
+	// 	".M.S.M....",
+	// 	"..........",
+	// 	"S.S.S.S.S.",
+	// 	".A.A.A.A..",
+	// 	"M.M.M.M.M.",
+	// 	"..........",
+	// }
 
 	ans := 0
 
-	for i := range input {
-		for j := range input {
+	for i := range len(input) - 1 {
+		for j := range len(input) - 1 {
 			letter := string(input[i][j])
 			if letter != "A" {
 				continue
 			}
-
-			// Backwards Horizontal Case
-			if j > 1 && input[i][j-1] == 'M' && input[i][j-2] == 'A' && input[i][j-3] == 'S' {
+			// Regular X
+			if j > 0 && i > 0 && input[i-1][j-1] == 'M' && input[i-1][j+1] == 'S' && input[i+1][j-1] == 'M' && input[i+1][j+1] == 'S' {
 				ans += 1
 			}
 
-			// Forwards Horizontal Case
-			if j < len(input)-3 && input[i][j+1] == 'M' && input[i][j+2] == 'A' && input[i][j+3] == 'S' {
+			// Top Left diagonal swapped
+			if j > 0 && i > 0 && input[i-1][j-1] == 'S' && input[i-1][j+1] == 'M' && input[i+1][j-1] == 'S' && input[i+1][j+1] == 'M' {
 				ans += 1
 			}
 
-			// Forward vertical Case
-			if i > 2 && input[i-1][j] == 'M' && input[i-2][j] == 'A' && input[i-3][j] == 'S' {
+			// Top Right diagonal swapped
+			if j > 0 && i > 0 && input[i-1][j-1] == 'M' && input[i-1][j+1] == 'M' && input[i+1][j-1] == 'S' && input[i+1][j+1] == 'S' {
 				ans += 1
 			}
 
-			// Backward vertical Case
-			if i < len(input)-3 && input[i+1][j] == 'M' && input[i+2][j] == 'A' && input[i+3][j] == 'S' {
-				ans += 1
-			}
-
-			// top left-diagonal
-			if i > 2 && j > 2 && input[i-1][j-1] == 'M' && input[i-2][j-2] == 'A' && input[i-3][j-3] == 'S' {
-				ans += 1
-			}
-
-			// top right-diagonal
-			if i > 2 && j < len(input)-3 && input[i-1][j+1] == 'M' && input[i-2][j+2] == 'A' && input[i-3][j+3] == 'S' {
-				ans += 1
-			}
-
-			// bottom right-diagonal
-			if i < len(input)-3 && j < len(input)-3 && input[i+1][j+1] == 'M' && input[i+2][j+2] == 'A' && input[i+3][j+3] == 'S' {
-				ans += 1
-			}
-
-			// bottom left-diagonal
-			if i < len(input)-3 && j > 2 && input[i+1][j-1] == 'M' && input[i+2][j-2] == 'A' && input[i+3][j-3] == 'S' {
+			// Both diagonal swapped
+			if j > 0 && i > 0 && input[i-1][j-1] == 'S' && input[i-1][j+1] == 'S' && input[i+1][j-1] == 'M' && input[i+1][j+1] == 'M' {
 				ans += 1
 			}
 
@@ -68,14 +53,6 @@ func main() {
 	}
 
 	fmt.Println(ans)
-}
-
-func extractInt(s string) int {
-	i, err := strconv.ParseInt(s, 10, 0)
-	if err != nil {
-		os.Exit(-1)
-	}
-	return int(i)
 }
 
 func ReadChallengeInput(filepath string) (searchSpace []string) {

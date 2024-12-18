@@ -48,27 +48,37 @@ func main() {
 		"97,13,75,29,47",
 	}
 
-	priority_map := make(map[int][]int, len(ordering_rules))
+	legal_followers := make(map[int][]int, len(ordering_rules))
 
 	// populate the map
 	for _, rule := range ordering_rules {
 		before := extractInt(rule[0:2])
 		after := extractInt(rule[3:5])
 
-		priority_map[after] = append(priority_map[after], before)
+		legal_followers[before] = append(legal_followers[before], after)
 	}
 
-	fmt.Printf("final map: %v\n", priority_map)
+	fmt.Printf("final map: %v\n", legal_followers)
 
 	sum := 0
 
 	for _, instruction := range update_instructions {
 		update_instructions_to_process := strings.Split(instruction, ",")
+		updates_length := len(update_instructions_to_process) - 1
 		valid_instructions := true
-		for _, i_element := range update_instructions_to_process {
-			fmt.Println(i_element)
+
+		// Case where all instructions are present.
+		if len(update_instructions) == len(legal_followers)-1 {
+
+			// Seeing as the keys represent a given print page, and all corresponding values that come after it
+			// if the update instructions line is valid, the final element's key->value pair won't exist in the map
+			// as nothing proceeds it!
+			if _, exist := legal_followers[extractInt(update_instructions_to_process[updates_length])]; exist {
+				valid_instructions = false
+			}
 		}
-		if valid_instructions {
+
+		if valid_instructions { // Take the middle element as instructed.
 			sum += extractInt(update_instructions_to_process[len(update_instructions_to_process)/2])
 		}
 	}

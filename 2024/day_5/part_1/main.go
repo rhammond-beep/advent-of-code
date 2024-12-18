@@ -62,20 +62,34 @@ func main() {
 
 	sum := 0
 
-	for _, instruction := range update_instructions {
-		update_instructions_to_process := strings.Split(instruction, ",")
-		updates_length := len(update_instructions_to_process) - 1
+	for _, instructions := range update_instructions {
+		update_instructions_to_process := strings.Split(instructions, ",")
+		n := len(update_instructions_to_process) - 1
 		valid_instructions := true
 
-		// Case where all instructions are present.
-		if len(update_instructions) == len(legal_followers)-1 {
+		for i := 0; i < n && valid_instructions; i++ {
+			subject_update := extractInt(update_instructions_to_process[i]) // this is always going to be the ith element in the list, then take the rest of the list and check against the allowed followers
+			allowed_followers := legal_followers[subject_update]
 
-			// Seeing as the keys represent a given print page, and all corresponding values that come after it
-			// if the update instructions line is valid, the final element's key->value pair won't exist in the map
-			// as nothing proceeds it!
-			if _, exist := legal_followers[extractInt(update_instructions_to_process[updates_length])]; exist {
-				valid_instructions = false
+			followers_to_test := update_instructions_to_process[i+1 : n+1]
+
+			// Check that each follower is actually allowed to be there
+			for _, follower := range followers_to_test {
+
+				present := false
+				for _, allowed_follower := range allowed_followers {
+					if extractInt(follower) == allowed_follower {
+						present = true
+						break
+					}
+				}
+				if !present {
+					valid_instructions = false
+					break
+				}
+
 			}
+
 		}
 
 		if valid_instructions { // Take the middle element as instructed.

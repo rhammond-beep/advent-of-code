@@ -20,22 +20,22 @@ func main() {
 	sum := 0
 
 	for _, instructions := range update_instructions {
-		update_instructions_to_process := strings.Split(instructions, ",")
-		n := len(update_instructions_to_process) - 1
+		update := createUpdate(strings.Split(instructions, ","))
+
 		valid_instructions := true
 
-		for i := 0; i < n && valid_instructions; i++ {
-			subject_update := extractInt(update_instructions_to_process[i]) // this is always going to be the ith element in the list, then take the rest of the list and check against the allowed followers
+		for i := 0; i < update.Size && valid_instructions; i++ {
+			subject_update := update.PageNumbers[i] // this is always going to be the ith element in the list, then take the rest of the list and check against the allowed followers
 			allowed_followers := legal_followers[subject_update]
 
-			followers_to_test := update_instructions_to_process[i+1 : n+1]
+			followers_to_test := update.PageNumbers[i+1 : update.Size+1]
 
 			// Check that each follower is actually allowed to be there
 			for _, follower := range followers_to_test {
 
 				present := false
 				for _, allowed_follower := range allowed_followers {
-					if extractInt(follower) == allowed_follower {
+					if follower == allowed_follower {
 						present = true
 						break
 					}
@@ -49,8 +49,8 @@ func main() {
 
 		}
 
-		if valid_instructions { // Take the middle element as instructed.
-			sum += extractInt(update_instructions_to_process[len(update_instructions_to_process)/2])
+		if valid_instructions {
+			sum += update.getMiddleElement()
 		}
 	}
 
@@ -76,12 +76,16 @@ func buildLegalFollowers() map[int][]int {
  * Make the update struct
  */
 func createUpdate(update []string) Update {
-	numbers := make([]int, len(update))
+	numbers := make([]int, 0, len(update))
 	for _, s := range update {
 		numbers = append(numbers, extractInt(s))
 	}
 
-	return Update{PageNumbers: numbers}
+	return Update{PageNumbers: numbers, Size: len(numbers) - 1}
+}
+
+func (update *Update) getMiddleElement() int {
+	return update.PageNumbers[update.Size/2]
 }
 
 /*
@@ -92,6 +96,7 @@ func (update *Update) isValidUpdate() bool {
 
 type Update struct {
 	PageNumbers []int
+	Size        int
 }
 
 func ReadChallengeInput(filepath string) (fileContents []string) {

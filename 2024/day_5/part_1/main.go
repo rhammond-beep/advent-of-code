@@ -8,10 +8,6 @@ import (
 	"strings"
 )
 
-/*
-The output should just be the sum of the middle values
-of the rows that are determined to be valid!
-*/
 func main() {
 	update_instructions := ReadChallengeInput("../update_orders.txt")
 
@@ -22,34 +18,7 @@ func main() {
 	for _, instructions := range update_instructions {
 		update := createUpdate(strings.Split(instructions, ","))
 
-		valid_instructions := true
-
-		for i := 0; i < update.Size && valid_instructions; i++ {
-			subject_update := update.PageNumbers[i] // this is always going to be the ith element in the list, then take the rest of the list and check against the allowed followers
-			allowed_followers := legal_followers[subject_update]
-
-			followers_to_test := update.PageNumbers[i+1 : update.Size+1]
-
-			// Check that each follower is actually allowed to be there
-			for _, follower := range followers_to_test {
-
-				present := false
-				for _, allowed_follower := range allowed_followers {
-					if follower == allowed_follower {
-						present = true
-						break
-					}
-				}
-				if !present {
-					valid_instructions = false
-					break
-				}
-
-			}
-
-		}
-
-		if valid_instructions {
+		if update.isValidUpdate(legal_followers) {
 			sum += update.getMiddleElement()
 		}
 	}
@@ -63,7 +32,7 @@ func buildLegalFollowers() map[int][]int {
 
 	// populate the map
 	for _, rule := range ordering_rules {
-		before := extractInt(rule[0:2])
+		before := extractInt(rule[0:2]) // hardcoded assumption here that each page is represented by exactly 2 characters of the original string (and so therefore is two digits in size)
 		after := extractInt(rule[3:5])
 
 		legal_followers[before] = append(legal_followers[before], after)
@@ -90,8 +59,34 @@ func (update *Update) getMiddleElement() int {
 
 /*
  */
-func (update *Update) isValidUpdate() bool {
-	return true
+func (update *Update) isValidUpdate(legal_followers map[int][]int) bool {
+	valid_instructions := true
+
+	for i := 0; i < update.Size && valid_instructions; i++ {
+		subject_update := update.PageNumbers[i] // this is always going to be the ith element in the list, then take the rest of the list and check against the allowed followers
+		allowed_followers := legal_followers[subject_update]
+
+		followers_to_test := update.PageNumbers[i+1 : update.Size+1]
+
+		// Check that each follower is actually allowed to be there
+		for _, follower := range followers_to_test {
+
+			present := false
+			for _, allowed_follower := range allowed_followers {
+				if follower == allowed_follower {
+					present = true
+					break
+				}
+			}
+			if !present {
+				valid_instructions = false
+				break
+			}
+
+		}
+
+	}
+	return valid_instructions
 }
 
 type Update struct {

@@ -11,20 +11,17 @@ import (
 
 func main() {
 	update_instructions := ReadChallengeInput("../update_orders.txt")
-
 	legal_followers := buildLegalFollowers()
 
 	sum := 0
 
 	for _, instructions := range update_instructions {
 		update := createUpdate(strings.Split(instructions, ","), legal_followers)
-
-		// if update.isValidUpdate() {
-		// 	sum += update.getMiddleElement()
-		// }
 		if !update.isValidUpdate() {
 			sort.Slice(update.PageNumbers, func(i, j int) bool {
-				return checkIfPageShouldFollow(j, update.PageOrderingRules[i])
+				num1 := update.PageNumbers[i]
+				num2 := update.PageNumbers[j]
+				return checkIfPageShouldFollow(num2, update.PageOrderingRules[num1])
 			})
 			sum += update.getMiddleElement()
 
@@ -36,6 +33,7 @@ func main() {
 
 func buildLegalFollowers() map[int][]int {
 	ordering_rules := ReadChallengeInput("../page_ordering_rules.txt")
+
 	legal_followers := make(map[int][]int, len(ordering_rules))
 
 	// populate the map

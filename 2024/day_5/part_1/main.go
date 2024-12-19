@@ -14,17 +14,8 @@ of the rows that are determined to be valid!
 */
 func main() {
 	update_instructions := ReadChallengeInput("../update_orders.txt")
-	ordering_rules := ReadChallengeInput("../page_ordering_rules.txt")
 
-	legal_followers := make(map[int][]int, len(ordering_rules))
-
-	// populate the map
-	for _, rule := range ordering_rules {
-		before := extractInt(rule[0:2])
-		after := extractInt(rule[3:5])
-
-		legal_followers[before] = append(legal_followers[before], after)
-	}
+	legal_followers := buildLegalFollowers()
 
 	sum := 0
 
@@ -64,6 +55,43 @@ func main() {
 	}
 
 	fmt.Printf("sum of lines: %v", sum)
+}
+
+func buildLegalFollowers() map[int][]int {
+	ordering_rules := ReadChallengeInput("../page_ordering_rules.txt")
+	legal_followers := make(map[int][]int, len(ordering_rules))
+
+	// populate the map
+	for _, rule := range ordering_rules {
+		before := extractInt(rule[0:2])
+		after := extractInt(rule[3:5])
+
+		legal_followers[before] = append(legal_followers[before], after)
+	}
+
+	return legal_followers
+}
+
+/*
+ * Make the update struct
+ */
+func createUpdate(update []string) Update {
+	numbers := make([]int, len(update))
+	for _, s := range update {
+		numbers = append(numbers, extractInt(s))
+	}
+
+	return Update{PageNumbers: numbers}
+}
+
+/*
+ */
+func (update *Update) isValidUpdate() bool {
+	return true
+}
+
+type Update struct {
+	PageNumbers []int
 }
 
 func ReadChallengeInput(filepath string) (fileContents []string) {

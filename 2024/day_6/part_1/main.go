@@ -7,24 +7,8 @@ import (
 	"os"
 )
 
-/*
-How many DISTINCT positions!! Not the pure number!!
-*/
 func main() {
 	guards_traversal := ReadChallengeInput("../day_6_input.txt")
-	// guards_traversal := []string{ // This config will result in there being 41 distinct positions visited
-	// 	"....#.....",
-	// 	".........#",
-	// 	"..........",
-	// 	"..#.......",
-	// 	".......#..",
-	// 	"..........",
-	// 	".#..^.....",
-	// 	"........#.",
-	// 	"#.........",
-	// 	"......#...",
-	// }
-
 	fmt.Println(RunSimulation(guards_traversal))
 }
 

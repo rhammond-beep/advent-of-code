@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"math"
 	"os"
@@ -81,28 +82,33 @@ func buildMap(input []string) Map {
 }
 
 /*
-draw out a Ray based on where the guard is facing and return a point to that barrier
+draw out a Ray based on where the guard is facing and return a point representing a barrier
 */
 func (m *Map) findBarrierOnLine() (closestPoint Point, err error) {
-
-	smallest := 1 << 8 // initalise to biggest possible value for 8 bit int
 
 	// find the closest valid value to the guard's current location
 	switch m.Direction {
 
 	case "north":
+		smallest := 0
 		for key, barrier := range m.ObstacleLocations {
-			if key.X < smallest && key.Y == m.GuardLocation.Y && barrier {
+			if key.X > smallest && key.X < m.GuardLocation.X && key.Y == m.GuardLocation.Y && barrier {
 				closestPoint = key
+				smallest = key.X
 			}
 		}
+		if smallest == 0 {
+			err = errors.New("no points found, so you walked off the map")
+		}
 		m.Direction = "east"
+
 	case "east":
 		m.Direction = "south"
+
 	case "south":
 		m.Direction = "west"
-	case "west":
 
+	case "west":
 		m.Direction = "north"
 	default:
 		os.Kill.Signal()

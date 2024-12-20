@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"math"
 	"os"
@@ -27,15 +26,26 @@ func main() {
 	locationsTraversed := 0
 
 	for {
-		foundBarrier, err := obstacleMap.findBarrierOnLine()
-		if err != nil { // We're done
+		foundBarrier, exited := obstacleMap.WalkUntilBarrierFound()
+		locationsTraversed += obstacleMap.calculateDistance(foundBarrier)
+		if exited {
 			fmt.Println(locationsTraversed)
 			break
 		}
 
-		locationsTraversed += obstacleMap.calculateDistance(foundBarrier)
-	}
+		// set the guard's location for the next iteration
+		switch obstacleMap.Direction {
+		case "north":
+			obstacleMap.GuardLocation = &Point{X: foundBarrier.X + 1, Y: foundBarrier.Y}
+		case "east":
+			obstacleMap.GuardLocation = &Point{X: foundBarrier.X, Y: foundBarrier.Y - 1}
+		case "south":
+			obstacleMap.GuardLocation = &Point{X: foundBarrier.X - 1, Y: foundBarrier.Y}
+		case "west":
+			obstacleMap.GuardLocation = &Point{X: foundBarrier.X, Y: foundBarrier.Y + 1}
 
+		}
+	}
 }
 
 type Point struct {
@@ -48,13 +58,18 @@ Helper method for calculating the number of squares between a guard's location
 and a given barrier
 */
 func (m *Map) calculateDistance(barrierLocation Point) int {
-	return int(math.Sqrt(math.Pow((float64(m.GuardLocation.X-barrierLocation.X)), 2) + (math.Pow(float64(m.GuardLocation.Y-barrierLocation.Y), 2))))
+	a := math.Pow(float64(m.GuardLocation.X-barrierLocation.X), 2)
+	b := math.Pow(float64(m.GuardLocation.Y-barrierLocation.Y), 2)
+
+	return int(math.Sqrt(a+b)) - 1
 }
 
 type Map struct {
 	ObstacleLocations map[Point]bool
-	GuardLocation     Point
+	GuardLocation     *Point
 	Direction         string
+	YUpperBound       int
+	XUpperBound       int
 }
 
 /*
@@ -78,43 +93,74 @@ func buildMap(input []string) Map {
 		}
 	}
 
-	return Map{ObstacleLocations: obstacleMap, GuardLocation: guardLocation, Direction: "north"}
+	return Map{ObstacleLocations: obstacleMap, GuardLocation: &guardLocation, Direction: "north", YUpperBound: len(input), XUpperBound: len(input)}
 }
 
 /*
 draw out a Ray based on where the guard is facing and return a point representing a barrier
 */
-func (m *Map) findBarrierOnLine() (closestPoint Point, err error) {
+func (m *Map) WalkUntilBarrierFound() (Point, bool) {
+	var closestPoint Point
 
-	// find the closest valid value to the guard's current location
 	switch m.Direction {
 
 	case "north":
-		smallest := 0
-		for key, barrier := range m.ObstacleLocations {
-			if key.X > smallest && key.X < m.GuardLocation.X && key.Y == m.GuardLocation.Y && barrier {
-				closestPoint = key
-				smallest = key.X
+		for i := m.GuardLocation.X - 1; i >= 0; i-- {
+			point2Test := Point{X: i, Y: m.GuardLocation.Y}
+			if m.ObstacleLocations[point2Test] {
+				closestPoint = point2Test
+				return closestPoint, false
 			}
 		}
-		if smallest == 0 {
-			err = errors.New("no points found, so you walked off the map")
+		if closestPoint.X == 0 {
+			return closestPoint, true
 		}
 		m.Direction = "east"
 
 	case "east":
+		for i := m.GuardLocation.Y + 1; i < m.YUpperBound; i++ {
+			point2Test := Point{X: m.GuardLocation.X, Y: i}
+			if m.ObstacleLocations[point2Test] {
+				closestPoint = point2Test
+				return closestPoint, false
+			}
+		}
+		if closestPoint.Y == m.YUpperBound {
+			return closestPoint, true
+		}
 		m.Direction = "south"
-
+		return closestPoint, false
 	case "south":
+		for i := m.GuardLocation.X + 1; i < m.XUpperBound; i++ {
+			point2Test := Point{X: i, Y: m.GuardLocation.Y}
+			if m.ObstacleLocations[point2Test] {
+				closestPoint = point2Test
+				return closestPoint, false
+			}
+		}
+		if closestPoint.X == m.XUpperBound {
+			return closestPoint, true
+		}
 		m.Direction = "west"
-
+		return closestPoint, false
 	case "west":
+		for i := m.GuardLocation.Y - 1; i > 0; i++ {
+			point2Test := Point{X: m.GuardLocation.X, Y: i}
+			if m.ObstacleLocations[point2Test] {
+				closestPoint = point2Test
+				return closestPoint, false
+			}
+		}
+		if closestPoint.X == 0 {
+			return closestPoint, true
+		}
 		m.Direction = "north"
+		return closestPoint, false
 	default:
-		os.Kill.Signal()
+		return closestPoint, true
 	}
 
-	return
+	panic("we really shouldn't be here")
 }
 
 func ReadChallengeInput(filepath string) (fileContents []string) {

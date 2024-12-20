@@ -53,6 +53,7 @@ func (m *Map) calculateDistance(barrierLocation Point) int {
 type Map struct {
 	ObstacleLocations map[Point]bool
 	GuardLocation     Point
+	Direction         string
 }
 
 /*
@@ -76,7 +77,7 @@ func buildMap(input []string) Map {
 		}
 	}
 
-	return Map{ObstacleLocations: obstacleMap, GuardLocation: guardLocation}
+	return Map{ObstacleLocations: obstacleMap, GuardLocation: guardLocation, Direction: "north"}
 }
 
 /*
@@ -84,20 +85,25 @@ draw out a Ray based on where the guard is facing and return a point to that bar
 */
 func (m *Map) findBarrierOnLine() (closestPoint Point, err error) {
 
-	direction := "north"
+	smallest := 1 << 8 // initalise to biggest possible value for 8 bit int
 
-	switch direction {
+	// find the closest valid value to the guard's current location
+	switch m.Direction {
 
-	case "north": // find the closest valid value to the guard's current location
-		for key, value := range m.ObstacleLocations {
-
+	case "north":
+		for key, barrier := range m.ObstacleLocations {
+			if key.X < smallest && key.Y == m.GuardLocation.Y && barrier {
+				closestPoint = key
+			}
 		}
+		m.Direction = "east"
 	case "east":
-
+		m.Direction = "south"
 	case "south":
-
+		m.Direction = "west"
 	case "west":
 
+		m.Direction = "north"
 	default:
 		os.Kill.Signal()
 	}

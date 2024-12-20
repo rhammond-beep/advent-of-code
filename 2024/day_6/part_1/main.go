@@ -11,27 +11,30 @@ import (
 How many DISTINCT positions!! Not the pure number!!
 */
 func main() {
-	// guards_traversal := ReadChallengeInput("../day_6_input.txt")
-	guards_traversal := []string{ // This config will result in there being 41 distinct positions visited
-		"....#.....",
-		".........#",
-		"..........",
-		"..#.......",
-		".......#..",
-		"..........",
-		".#..^.....",
-		"........#.",
-		"#.........",
-		"......#...",
-	}
+	guards_traversal := ReadChallengeInput("../day_6_input.txt")
+	// guards_traversal := []string{ // This config will result in there being 41 distinct positions visited
+	// 	"....#.....",
+	// 	".........#",
+	// 	"..........",
+	// 	"..#.......",
+	// 	".......#..",
+	// 	"..........",
+	// 	".#..^.....",
+	// 	"........#.",
+	// 	"#.........",
+	// 	"......#...",
+	// }
 
-	obstacleMap := buildMap(guards_traversal)
+	fmt.Println(RunSimulation(guards_traversal))
+}
+
+func RunSimulation(input []string) int {
+	obstacleMap := buildMap(input)
 
 	for {
 		foundBarrier, exited := obstacleMap.WalkUntilBarrierFound()
 		if exited {
-			fmt.Println(obstacleMap.CountUniquePositionsVisited())
-			break
+			return obstacleMap.CountUniquePositionsVisited()
 		}
 
 		// set the guard's location for the next iteration
@@ -51,6 +54,7 @@ func main() {
 
 		}
 	}
+
 }
 
 type Point struct {

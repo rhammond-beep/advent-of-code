@@ -100,6 +100,7 @@ func buildMap(input []string) Map {
 				obstacleMap[point] = true
 			} else if input[i][j] == '^' {
 				guardLocation = point
+				positionsVisited[point] = true
 			} else {
 				positionsVisited[point] = false
 				obstacleMap[point] = false

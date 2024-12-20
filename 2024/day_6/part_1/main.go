@@ -37,12 +37,16 @@ func main() {
 		switch obstacleMap.Direction {
 		case "north":
 			obstacleMap.GuardLocation = &Point{X: foundBarrier.X + 1, Y: foundBarrier.Y}
+			obstacleMap.Direction = "east"
 		case "east":
 			obstacleMap.GuardLocation = &Point{X: foundBarrier.X, Y: foundBarrier.Y - 1}
+			obstacleMap.Direction = "south"
 		case "south":
 			obstacleMap.GuardLocation = &Point{X: foundBarrier.X - 1, Y: foundBarrier.Y}
+			obstacleMap.Direction = "west"
 		case "west":
 			obstacleMap.GuardLocation = &Point{X: foundBarrier.X, Y: foundBarrier.Y + 1}
+			obstacleMap.Direction = "north"
 
 		}
 	}
@@ -112,11 +116,6 @@ func (m *Map) WalkUntilBarrierFound() (Point, bool) {
 				return closestPoint, false
 			}
 		}
-		if closestPoint.X == 0 {
-			return closestPoint, true
-		}
-		m.Direction = "east"
-
 	case "east":
 		for i := m.GuardLocation.Y + 1; i < m.YUpperBound; i++ {
 			point2Test := Point{X: m.GuardLocation.X, Y: i}
@@ -125,11 +124,6 @@ func (m *Map) WalkUntilBarrierFound() (Point, bool) {
 				return closestPoint, false
 			}
 		}
-		if closestPoint.Y == m.YUpperBound {
-			return closestPoint, true
-		}
-		m.Direction = "south"
-		return closestPoint, false
 	case "south":
 		for i := m.GuardLocation.X + 1; i < m.XUpperBound; i++ {
 			point2Test := Point{X: i, Y: m.GuardLocation.Y}
@@ -138,29 +132,19 @@ func (m *Map) WalkUntilBarrierFound() (Point, bool) {
 				return closestPoint, false
 			}
 		}
-		if closestPoint.X == m.XUpperBound {
-			return closestPoint, true
-		}
-		m.Direction = "west"
-		return closestPoint, false
 	case "west":
-		for i := m.GuardLocation.Y - 1; i > 0; i++ {
+		for i := m.GuardLocation.Y - 1; i >= 0; i-- {
 			point2Test := Point{X: m.GuardLocation.X, Y: i}
 			if m.ObstacleLocations[point2Test] {
 				closestPoint = point2Test
 				return closestPoint, false
 			}
 		}
-		if closestPoint.X == 0 {
-			return closestPoint, true
-		}
-		m.Direction = "north"
-		return closestPoint, false
 	default:
-		return closestPoint, true
+		panic("we really shouldn't be here")
 	}
 
-	panic("we really shouldn't be here")
+	return closestPoint, true
 }
 
 func ReadChallengeInput(filepath string) (fileContents []string) {

@@ -5,7 +5,7 @@ import (
 )
 
 func SolveDay2Part2() {
-	reports := readReports("../day_2_input.txt")
+	reports := readReports("day_2_input.txt")
 	count := 0
 
 	for _, report := range reports {

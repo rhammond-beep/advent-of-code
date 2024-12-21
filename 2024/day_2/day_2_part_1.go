@@ -4,11 +4,8 @@ import (
 	"fmt"
 )
 
-/*
-Checking the safety for each given report
-*/
 func SolveDay2Part1() {
-	reports := readReports("../day_2_input.txt")
+	reports := readReports("day_2_input.txt")
 
 	count := 0
 

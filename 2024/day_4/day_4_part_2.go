@@ -1,25 +1,12 @@
-package main
+package day4
 
 import (
-	"bufio"
 	"fmt"
-	"os"
+	helper "github.com/rhammond-beep/advent-of-code-go-helper"
 )
 
-func main() {
-	input := ReadChallengeInput("../day_4_input.txt")
-	// input := []string{
-	// 	".M.S......",
-	// 	"..A..MSMS.",
-	// 	".M.S.MAA..",
-	// 	"..A.ASMSM.",
-	// 	".M.S.M....",
-	// 	"..........",
-	// 	"S.S.S.S.S.",
-	// 	".A.A.A.A..",
-	// 	"M.M.M.M.M.",
-	// 	"..........",
-	// }
+func SolveDay4Part2() {
+	input := helper.ReadChallengeInput("day_4_input.txt")
 
 	ans := 0
 
@@ -53,18 +40,4 @@ func main() {
 	}
 
 	fmt.Println(ans)
-}
-
-func ReadChallengeInput(filepath string) (searchSpace []string) {
-	file, err := os.Open(filepath)
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		searchSpace = append(searchSpace, scanner.Text())
-	}
-	return
 }

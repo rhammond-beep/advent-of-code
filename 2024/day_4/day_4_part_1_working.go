@@ -1,26 +1,12 @@
-package main
+package day4
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"strconv"
+	helper "github.com/rhammond-beep/advent-of-code-go-helper"
 )
 
-func main() {
-	input := ReadChallengeInput("../day_4_input.txt")
-	//	input := []string{
-	//		"MMMSXXMASM",
-	//		"MSAMXMSMSA",
-	//		"AMXSXMAAMM",
-	//		"MSAMASMSMX",
-	//		"XMASAMXAMM",
-	//		"XXAMMXXAMA",
-	//		"SMSMSASXSS",
-	//		"SAXAMASAAA",
-	//		"MAMMMXMMMM",
-	//		"MXMXAXMASX",
-	//	}
+func SolveDay4Part1Working() {
+	input := helper.ReadChallengeInput("day_4_input.txt")
 
 	ans := 0
 
@@ -75,26 +61,4 @@ func main() {
 	}
 
 	fmt.Println(ans)
-}
-
-func extractInt(s string) int {
-	i, err := strconv.ParseInt(s, 10, 0)
-	if err != nil {
-		os.Exit(-1)
-	}
-	return int(i)
-}
-
-func ReadChallengeInput(filepath string) (searchSpace []string) {
-	file, err := os.Open(filepath)
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		searchSpace = append(searchSpace, scanner.Text())
-	}
-	return
 }

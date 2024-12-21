@@ -7,7 +7,7 @@ import (
 )
 
 func SolveDay3Part1() {
-	input := helper.ReadChallengeInputContigious("../day_3_input.txt")
+	input := helper.ReadChallengeInputContigious("day_3_input.txt")
 	multiply_re := regexp.MustCompile(`mul\((\d{1,3}),(\d{1,3})\)`) // Use extra parenthesis to created nested match groups
 	multiply_matches := multiply_re.FindAllStringSubmatch(input, -1)
 

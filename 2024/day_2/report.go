@@ -1,29 +1,22 @@
-package main
+package day2
 
 import (
-	"bufio"
-	"fmt"
+	helper "github.com/rhammond-beep/advent-of-code-go-helper"
 	"math"
-	"os"
-	"strconv"
-	"strings"
 )
-
-func main() {
-	reports := ReadChallengeInput("../day_2_input.txt")
-	count := 0
-
-	for _, report := range reports {
-		if report.IsReportSafe() || report.CanDampenerMakeSafe() {
-			count++
-		}
-	}
-
-	fmt.Println(count)
-}
 
 type Report struct {
 	Levels []int
+}
+
+func createReport(s []string) Report {
+	var levels []int
+
+	for _, item := range s {
+		levels = append(levels, helper.ExtractInt(item))
+	}
+
+	return Report{Levels: levels}
 }
 
 /*
@@ -31,7 +24,7 @@ A report is only considered safe if both of the following are true:
 1) The levels are either all increasing or all descreasing
 2) Any two adjacent levels differ by at least one and at most three.
 */
-func (r *Report) IsReportSafe() bool {
+func (r *Report) isReportSafe() bool {
 	safe := true
 
 	if len(r.Levels) == 1 {
@@ -67,14 +60,14 @@ func (r *Report) IsReportSafe() bool {
 	return safe
 }
 
-func (r *Report) CanDampenerMakeSafe() bool {
+func (r *Report) canDampenerMakeSafe() bool {
 	dampener_made_safe := false
 
 	for i := 0; i < len(r.Levels); i++ {
 		fresh_slice := make([]int, len(r.Levels))
-		copy(fresh_slice, r.Levels) // If I don't do this, the Flipping original Levels on the struct get's updated... ? Why tho
+		copy(fresh_slice, r.Levels)
 		all_bar_one := Report{Levels: deleteElement(fresh_slice, i)}
-		if all_bar_one.IsReportSafe() {
+		if all_bar_one.isReportSafe() {
 			dampener_made_safe = true
 			break
 		}
@@ -85,38 +78,4 @@ func (r *Report) CanDampenerMakeSafe() bool {
 
 func deleteElement(slice []int, index int) []int {
 	return append(slice[:index], slice[index+1:]...)
-}
-
-func ReadChallengeInput(filepath string) (reports []Report) {
-	file, err := os.Open(filepath)
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-
-	for scanner.Scan() {
-		pair := strings.Split(scanner.Text(), " ")
-		reports = append(reports, createReport(pair))
-	}
-	return
-}
-
-func createReport(s []string) Report {
-	var levels []int
-
-	for _, item := range s {
-		levels = append(levels, extractInt(item))
-	}
-
-	return Report{Levels: levels}
-}
-
-func extractInt(s string) int {
-	i, err := strconv.ParseInt(s, 10, 0)
-	if err != nil {
-		os.Exit(-1)
-	}
-	return int(i)
 }

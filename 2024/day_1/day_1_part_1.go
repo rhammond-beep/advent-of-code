@@ -1,11 +1,11 @@
-package main
+package day1
 
 import (
 	"fmt"
+	helper "github.com/rhammond-beep/advent-of-code-go-helper"
 	"math"
 	"os"
 	"sort"
-	"strconv"
 	"strings"
 )
 
@@ -13,7 +13,6 @@ import (
 *
 
 	Reconcile the lists
-
 	Step 1) Parse the file into two seperate lists using space as the delimeter
 	Step 2) Sort them into ascending order (smallest first)
 	Step 3) Linearly walk through list, summing differnce between pairs (abs)
@@ -21,7 +20,7 @@ import (
 
 *
 */
-func main() {
+func SolveDay1() {
 	input_file, err := os.Open("day_1_input.txt")
 
 	stat, err := input_file.Stat()
@@ -46,8 +45,8 @@ func main() {
 
 	for _, pair := range sa {
 		pair2Assign := strings.Split(pair, " ")
-		group1 = append(group1, extractInt(pair2Assign[0]))
-		group2 = append(group2, extractInt(pair2Assign[1]))
+		group1 = append(group1, helper.ExtractInt(pair2Assign[0]))
+		group2 = append(group2, helper.ExtractInt(pair2Assign[1]))
 	}
 
 	sort.Ints(group1)
@@ -61,19 +60,10 @@ func main() {
 
 	fmt.Printf("Total difference: %f\n", sum)
 
-	// Annon Cleanup function to close file after use.
 	defer func() {
 		err := input_file.Close()
 		if err != nil {
 			panic(err)
 		}
 	}()
-}
-
-func extractInt(s string) int {
-	i, err := strconv.ParseInt(s, 10, 0)
-	if err != nil {
-		os.Exit(-1)
-	}
-	return int(i)
 }

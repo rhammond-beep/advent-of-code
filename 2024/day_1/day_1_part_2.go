@@ -1,11 +1,11 @@
-package main
+package day1
 
 import (
 	"bufio"
 	"fmt"
+	helper "github.com/rhammond-beep/advent-of-code-go-helper"
 	"os"
 	"sort"
-	"strconv"
 	"strings"
 )
 
@@ -34,18 +34,10 @@ func ReadChallengeInput(filepath string) (left_list, right_list []int) {
 
 	for scanner.Scan() {
 		pair := strings.Split(scanner.Text(), " ")
-		left_list = append(left_list, extractInt(pair[0]))
-		right_list = append(right_list, extractInt(pair[1]))
+		left_list = append(left_list, helper.ExtractInt(pair[0]))
+		right_list = append(right_list, helper.ExtractInt(pair[1]))
 	}
 	return
-}
-
-func extractInt(s string) int {
-	i, err := strconv.ParseInt(s, 10, 0)
-	if err != nil {
-		os.Exit(-1)
-	}
-	return int(i)
 }
 
 func calculateSimilarityScore(left_list, right_list []int) int {

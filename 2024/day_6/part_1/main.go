@@ -1,10 +1,8 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"math"
-	"os"
 )
 
 func main() {
@@ -162,20 +160,6 @@ func (m *Map) CountUniquePositionsVisited() (positionsVisited int) {
 		if value {
 			positionsVisited += 1
 		}
-	}
-	return
-}
-
-func ReadChallengeInput(filepath string) (fileContents []string) {
-	file, err := os.Open(filepath)
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		fileContents = append(fileContents, scanner.Text())
 	}
 	return
 }

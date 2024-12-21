@@ -1,0 +1,28 @@
+final map: 
+
+after as key:
+map[
+	13:[97 61 29 47 75 53] 
+	29:[75 97 53 61 47] 
+	47:[97 75] 
+	53:[47 75 61 97] 
+	61:[97 47 75] 
+	75:[97]
+]
+
+before as key: 
+final map: 
+map[
+	29:[13] 
+	47:[53 13 61 29] 
+	53:[29 13] 
+	61:[13 53 29] 
+	75:[29 53 47 61 13] 
+	97:[13 61 47 29 53 75]
+]
+
+in both cases we're missing out on keys... In the after case we don't get 97 as nothing before it 
+
+in the before case we don't get 13 as nothing comes after it!
+
+Therefore, we could just have some edge case to handle this?

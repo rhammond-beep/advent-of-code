@@ -1,60 +1,8 @@
-package main
-
-import (
-	"fmt"
-	"math"
-)
-
-func main() {
-	guards_traversal := ReadChallengeInput("../day_6_input.txt")
-	fmt.Println(RunSimulation(guards_traversal))
-}
-
-func RunSimulation(input []string) int {
-	obstacleMap := buildMap(input)
-
-	for {
-		foundBarrier, exited := obstacleMap.WalkUntilBarrierFound()
-		if exited {
-			return obstacleMap.CountUniquePositionsVisited()
-		}
-
-		// set the guard's location for the next iteration
-		switch obstacleMap.Direction {
-		case "north":
-			obstacleMap.GuardLocation = &Point{X: foundBarrier.X + 1, Y: foundBarrier.Y}
-			obstacleMap.Direction = "east"
-		case "east":
-			obstacleMap.GuardLocation = &Point{X: foundBarrier.X, Y: foundBarrier.Y - 1}
-			obstacleMap.Direction = "south"
-		case "south":
-			obstacleMap.GuardLocation = &Point{X: foundBarrier.X - 1, Y: foundBarrier.Y}
-			obstacleMap.Direction = "west"
-		case "west":
-			obstacleMap.GuardLocation = &Point{X: foundBarrier.X, Y: foundBarrier.Y + 1}
-			obstacleMap.Direction = "north"
-
-		}
-	}
-
-}
+package day6
 
 type Point struct {
 	X int
 	Y int
-}
-
-/*
-Helper method for calculating the number of squares between a guard's location
-and a given barrier
-
-Not even needed lol
-*/
-func (m *Map) CalculateDistance(barrierLocation Point) int {
-	a := math.Pow(float64(m.GuardLocation.X-barrierLocation.X), 2)
-	b := math.Pow(float64(m.GuardLocation.Y-barrierLocation.Y), 2)
-
-	return int(math.Sqrt(a+b)) - 1
 }
 
 type Map struct {

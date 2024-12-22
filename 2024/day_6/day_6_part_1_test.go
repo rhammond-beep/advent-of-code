@@ -1,4 +1,4 @@
-package main
+package day6
 
 import "testing"
 
@@ -18,7 +18,7 @@ func TestGuardSouthExit(t *testing.T) {
 
 	expectedUniquePositions := 41
 
-	actualUniquePositions := RunSimulation(guards_traversal)
+	actualUniquePositions := runSimulation(guards_traversal)
 
 	if expectedUniquePositions != actualUniquePositions {
 		t.Fatalf("incorrect number of positions, actual: %v\t wanted: %v", actualUniquePositions, expectedUniquePositions)
@@ -41,7 +41,7 @@ func TestGuardNorthExit(t *testing.T) {
 
 	expectedUniquePositions := 6
 
-	actualUniquePositions := RunSimulation(guards_traversal)
+	actualUniquePositions := runSimulation(guards_traversal)
 
 	if expectedUniquePositions != actualUniquePositions {
 		t.Fatalf("incorrect number of positions, actual: %v\t wanted: %v", actualUniquePositions, expectedUniquePositions)
@@ -64,7 +64,7 @@ func TestGuardEastExit(t *testing.T) {
 
 	expectedUniquePositions := 10
 
-	actualUniquePositions := RunSimulation(guards_traversal)
+	actualUniquePositions := runSimulation(guards_traversal)
 
 	if expectedUniquePositions != actualUniquePositions {
 		t.Fatalf("incorrect number of positions, actual: %v\t wanted: %v", actualUniquePositions, expectedUniquePositions)
@@ -87,7 +87,7 @@ func TestGuardWestExit(t *testing.T) {
 
 	expectedUniquePositions := 22
 
-	actualUniquePositions := RunSimulation(guards_traversal)
+	actualUniquePositions := runSimulation(guards_traversal)
 
 	if expectedUniquePositions != actualUniquePositions {
 		t.Fatalf("incorrect number of positions, actual: %v\t wanted: %v", actualUniquePositions, expectedUniquePositions)

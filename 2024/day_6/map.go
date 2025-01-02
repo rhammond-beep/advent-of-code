@@ -18,7 +18,7 @@ type Map struct {
 Create a lookup reference for us to refer back to
 as the Guard traverses the lab
 */
-func buildMap(input []string) Map {
+func BuildMap(input []string) Map {
 	obstacleMap := make(map[Point]bool)
 	positionsVisited := make(map[Point]bool)
 	var guardLocation Point

@@ -7,6 +7,6 @@ import (
 
 func SolveDay6Part2() {
 	guards_traversal := helper.ReadChallengeInput("./day_6_input.txt")
-	graph := BuildGraph(guards_traversal)
+	graph := CreateGraph(guards_traversal)
 	fmt.Println(graph)
 }

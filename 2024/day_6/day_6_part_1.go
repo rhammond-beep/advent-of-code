@@ -11,7 +11,7 @@ func SolveDay6Part1() {
 }
 
 func runSimulation(input []string) int {
-	obstacleMap := buildMap(input)
+	obstacleMap := BuildMap(input)
 
 	for {
 		foundBarrier, exited := obstacleMap.WalkUntilBarrierFound()

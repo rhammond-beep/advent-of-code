@@ -100,9 +100,6 @@ func (m *Map) WalkUntilBarrierFound() (Point, bool) {
 	return closestPoint, true
 }
 
-/*
-I can't think of a clever way of
-*/
 func (m *Map) CountUniquePositionsVisited() (positionsVisited int) {
 	for _, value := range m.PositionsVisited {
 		if value {

@@ -43,21 +43,27 @@ func CreateGraph(input []string) Graph {
 }
 
 /*
-Accept a map of the lab as input to populate the edges on the graph
+Accept a map of the lab as input to populate the edges belonging to the graph
 */
 func (g *Graph) PopulateEdges(lab *Map) {
-	for {
-		var previousVertex *Node
+	var previousVertex *Node
 
+	for {
 		foundBarrier, exited := lab.WalkUntilBarrierFound()
+
+		currentVertex := g.Nodes[foundBarrier]
+
+		if previousVertex != nil {
+			previousVertex.addEdge(currentVertex)
+		}
+
+		previousVertex = currentVertex
+
+		lab.SetGuardDirection(foundBarrier)
 
 		if exited {
 			break
 		}
-		currentVertex := g.Nodes[foundBarrier]
-		previousVertex.addEdge(currentVertex)
-		previousVertex = currentVertex
-
 	}
 }
 

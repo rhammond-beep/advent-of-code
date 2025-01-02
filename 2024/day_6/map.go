@@ -100,6 +100,25 @@ func (m *Map) WalkUntilBarrierFound() (Point, bool) {
 	return closestPoint, true
 }
 
+func (m *Map) SetGuardDirection(foundBarrier Point) {
+	// set the guard's location for the next iteration
+	switch m.Direction {
+	case "north":
+		m.GuardLocation = &Point{X: foundBarrier.X + 1, Y: foundBarrier.Y}
+		m.Direction = "east"
+	case "east":
+		m.GuardLocation = &Point{X: foundBarrier.X, Y: foundBarrier.Y - 1}
+		m.Direction = "south"
+	case "south":
+		m.GuardLocation = &Point{X: foundBarrier.X - 1, Y: foundBarrier.Y}
+		m.Direction = "west"
+	case "west":
+		m.GuardLocation = &Point{X: foundBarrier.X, Y: foundBarrier.Y + 1}
+		m.Direction = "north"
+	}
+
+}
+
 func (m *Map) CountUniquePositionsVisited() (positionsVisited int) {
 	for _, value := range m.PositionsVisited {
 		if value {

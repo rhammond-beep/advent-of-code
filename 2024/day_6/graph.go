@@ -58,21 +58,6 @@ func (g *Graph) PopulateEdges(lab *Map) {
 		previousVertex.addEdge(currentVertex)
 		previousVertex = currentVertex
 
-		// set the guard's location for the next iteration
-		switch lab.Direction {
-		case "north":
-			lab.GuardLocation = &Point{X: foundBarrier.X + 1, Y: foundBarrier.Y}
-			lab.Direction = "east"
-		case "east":
-			lab.GuardLocation = &Point{X: foundBarrier.X, Y: foundBarrier.Y - 1}
-			lab.Direction = "south"
-		case "south":
-			lab.GuardLocation = &Point{X: foundBarrier.X - 1, Y: foundBarrier.Y}
-			lab.Direction = "west"
-		case "west":
-			lab.GuardLocation = &Point{X: foundBarrier.X, Y: foundBarrier.Y + 1}
-			lab.Direction = "north"
-		}
 	}
 }
 

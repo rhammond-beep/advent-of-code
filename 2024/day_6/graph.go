@@ -34,12 +34,19 @@ func BuildGraph(input []string) Graph {
 		for j := 0; j < len(input); j++ {
 			point := Point{X: i, Y: j}
 			if input[i][j] == '#' {
-				edges := make(map[Point]*Edge)
-				edge := &Edge{Node: previousNode}
-				edges[point] = edge
+				edge := &Edge{Node: previousNode} // create the edge which connects to the previous node.
+				node, exists := nodes[point]
+				if !exists {
+					edges := make(map[Point]*Edge)
+					edges[point] = edge
 
-				node := &Node{Val: point, Edges: edges}
-				nodes[point] = node
+					node := &Node{Val: point, Edges: edges}
+					nodes[point] = node
+				} else {
+					node.Edges[point] = edge // add in the new connection
+				}
+
+				// set previous node to current node for next iteration
 				previousNode = node
 			}
 		}

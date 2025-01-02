@@ -39,7 +39,7 @@ func TestGuardNorthExit(t *testing.T) {
 		"......#...",
 	}
 
-	expectedUniquePositions := 6
+	expectedUniquePositions := 7
 
 	actualUniquePositions := runSimulation(guards_traversal)
 
@@ -62,7 +62,7 @@ func TestGuardEastExit(t *testing.T) {
 		"......#...",
 	}
 
-	expectedUniquePositions := 10
+	expectedUniquePositions := 11
 
 	actualUniquePositions := runSimulation(guards_traversal)
 

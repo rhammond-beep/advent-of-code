@@ -19,13 +19,14 @@ type Node struct {
 Encode the relationship between given nodes
 */
 type Edge struct {
-	Node *Node
+	Direction string // Do we need the direction strictly?
+	Node      *Node
 }
 
 /*
 Walk through the input, defining the unconnected verticies
 */
-func CreateGraph(input []string) Graph {
+func CreateEmptyGraph(input []string) Graph {
 	nodes := make(map[Point]*Node)
 
 	for i := 0; i < len(input); i++ {
@@ -43,18 +44,21 @@ func CreateGraph(input []string) Graph {
 }
 
 /*
-Accept a map of the lab as input to populate the edges belonging to the graph
+Accept a map of the lab as input to populate the edges based on the walk of the guard
+As we create the edges within the graph, return the nodes we visit in order.
 */
-func (g *Graph) PopulateEdges(lab *Map) {
+func (g *Graph) CreateEdges(lab *Map) []*Node {
 	var previousVertex *Node
+	nodes_walked := make([]*Node, 0)
 
 	for {
 		foundBarrier, exited := lab.WalkUntilBarrierFound()
 
 		currentVertex := g.Nodes[foundBarrier]
+		nodes_walked = append(nodes_walked, currentVertex)
 
 		if previousVertex != nil {
-			previousVertex.addEdge(currentVertex)
+			previousVertex.AddEdge(currentVertex, lab.Direction)
 		}
 
 		previousVertex = currentVertex
@@ -65,11 +69,23 @@ func (g *Graph) PopulateEdges(lab *Map) {
 			break
 		}
 	}
+
+	return nodes_walked
 }
 
 /*
-Create an edge between two nodes (should this be a directed one??)
+Function to recursively walk the graph in the same order as the guard until a null node is found
 */
-func (n *Node) addEdge(cn *Node) {
-	n.Edges = append(n.Edges, &Edge{Node: cn})
+func (g *Graph) WalkGraph() {
+
+}
+
+/*
+Create an edge between two adjecent nodes (should this be a directed one??)
+as in, should I be storing the relationship on both sides here? Probably not.
+
+Should be able to use this to Place in an extra obstacle to create a cycle.
+*/
+func (n *Node) AddEdge(cn *Node, direction string) {
+	n.Edges = append(n.Edges, &Edge{Node: cn, Direction: direction})
 }

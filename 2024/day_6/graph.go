@@ -1,5 +1,7 @@
 package day6
 
+import "errors"
+
 /*
 The space representing the patrol path of the guard and the obstructions he encounters
 */
@@ -21,6 +23,13 @@ Encode the relationship between given nodes
 type Edge struct {
 	Direction string // Do we need the direction strictly?
 	Node      *Node
+}
+
+var directionMap = map[string]string{
+	"north": "east",
+	"east":  "south",
+	"south": "west",
+	"west":  "north",
 }
 
 /*
@@ -74,10 +83,49 @@ func (g *Graph) CreateEdges(lab *Map) []*Node {
 }
 
 /*
-Function to recursively walk the graph in the same order as the guard until a null node is found
+given that two point correspond to a node in the graph, Try to walk from the start point to the endpoint,
+returning a boolean to indicate if walk was successful along with the nodes traversed, otherwise returning false and nil
 */
-func (g *Graph) WalkGraph() {
+func (g *Graph) WalkGraphFromNode(startPoint, endPoint Point, direction string) (bool, []*Node, error) {
+	currentNode, ok := g.Nodes[startPoint]
+	if !ok {
+		return false, nil, errors.New("No node at the specified starting position")
+	}
 
+	endNode, ok := g.Nodes[endPoint]
+	if !ok {
+		return false, nil, errors.New("No node at the specified end position")
+	}
+	path := make([]*Node, 0)
+
+	for {
+		nextNode, error := currentNode.Walk(direction)
+		path = append(path, nextNode)
+
+		if error != nil {
+			return false, path, error
+		}
+
+		if nextNode == endNode {
+			return true, path, nil
+		}
+
+		direction = directionMap[direction]
+		currentNode = nextNode
+	}
+}
+
+/*
+Walk a step in the specified direction, return an error if not possible
+*/
+func (n *Node) Walk(direction string) (*Node, error) {
+	for _, edge := range n.Edges {
+		if edge.Direction == direction {
+			return edge.Node, nil
+		}
+	}
+
+	return nil, errors.New("No edge with that direction found")
 }
 
 /*

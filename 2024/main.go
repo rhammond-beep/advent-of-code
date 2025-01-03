@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	day6 "rupert-hammond-aoc/day_6"
 )
 
@@ -22,7 +21,7 @@ func main() {
 	lab := day6.BuildMap(input)
 	graph := day6.CreateEmptyGraphFromMap(&lab)
 	graph.CreateEdges(&lab)
-	fmt.Println(graph.CalculateGraphSize())
+	graph.PrintGraphVisulisation()
 
 	// _, nodes, error := graph.WalkGraphFromNode(day6.Point{X: 6, Y: 4}, day6.Point{X: 3, Y: 2}, "north")
 

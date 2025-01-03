@@ -20,31 +20,18 @@ func main() {
 	}
 
 	lab := day6.BuildMap(input)
-	graph := day6.CreateEmptyGraph(input)
+	graph := day6.CreateEmptyGraphFromMap(&lab)
 	graph.CreateEdges(&lab)
+	fmt.Println(graph.CalculateGraphSize())
 
-	_, nodes, error := graph.WalkGraphFromNode(day6.Point{X: 0, Y: 4}, day6.Point{X: 3, Y: 2}, "east")
+	// _, nodes, error := graph.WalkGraphFromNode(day6.Point{X: 6, Y: 4}, day6.Point{X: 3, Y: 2}, "north")
 
-	if error != nil {
-		fmt.Printf("Error Encountered while walking tree: %v", error.Error())
-	}
-
-	for i, node := range nodes {
-		fmt.Printf("Order Visited: %v Node Value: %v\n", i+1, node)
-	}
-
-	// fmt.Println("***********Graph************")
-
-	// for _, node := range graph.Nodes {
-	// 	fmt.Println("-----------Node------------")
-	// 	fmt.Printf("reference: %v\n point: %v\n edges: %v\n", &node, node.Val, node.Edges)
-	// 	fmt.Println("---------------------------")
-	// 	fmt.Println("-----------Edges-----------")
-	// 	for _, edge := range node.Edges {
-	// 		fmt.Printf("edge ref: %v\n direction: %v\n", &edge, edge.Direction)
-	// 	}
-	// 	fmt.Println("---------------------------")
+	// if error != nil {
+	// 	fmt.Printf("Error Encountered while walking graph: %v", error.Error())
 	// }
-	// fmt.Println("********************************")
+
+	//for i, node := range nodes {
+	//	fmt.Printf("Order Visited: %v Node Value: %v\n", i+1, node)
+	//}
 
 }

@@ -16,8 +16,9 @@ type Graph struct {
 An Obstacle in this given instance, the subject of our interest.
 */
 type Node struct {
-	Val   Point
-	Edges []*Edge // A List of connected Edges
+	Position Point
+	Type     string
+	Edges    []*Edge // A List of connected Edges
 }
 
 /*
@@ -36,19 +37,17 @@ var directionMap = map[string]string{
 }
 
 /*
-Walk through the input, defining the unconnected verticies
+Walk through the obstacles, defining the unconnected verticies
+(We also define "Guard" as a special type of node which we start at)
 */
-func CreateEmptyGraph(input []string) Graph {
+func CreateEmptyGraphFromMap(m *Map) Graph {
 	nodes := make(map[Point]*Node)
 
-	for i := 0; i < len(input); i++ {
-		for j := 0; j < len(input); j++ {
-			point := Point{X: i, Y: j}
-			if input[i][j] == '#' {
-				edges := make([]*Edge, 0)
-				node := &Node{Val: point, Edges: edges}
-				nodes[point] = node
-			}
+	nodes[*m.GuardLocation] = &Node{Type: "guard", Position: *m.GuardLocation, Edges: make([]*Edge, 0)}
+
+	for obstacle, present := range m.ObstacleLocations {
+		if present {
+			nodes[obstacle] = &Node{Type: "obstacle", Position: obstacle, Edges: make([]*Edge, 0)}
 		}
 	}
 
@@ -60,7 +59,7 @@ Accept a map of the lab as input to populate the edges based on the walk of the 
 As we create the edges within the graph, return the nodes we visit in order.
 */
 func (g *Graph) CreateEdges(lab *Map) []*Node {
-	var previousVertex *Node
+	previousVertex := g.Nodes[*lab.GuardLocation]
 	nodes_walked := make([]*Node, 0)
 
 	for {
@@ -68,10 +67,7 @@ func (g *Graph) CreateEdges(lab *Map) []*Node {
 
 		currentVertex := g.Nodes[foundBarrier]
 		nodes_walked = append(nodes_walked, currentVertex)
-
-		if previousVertex != nil {
-			previousVertex.AddEdge(currentVertex, lab.Direction)
-		}
+		previousVertex.AddEdge(currentVertex, lab.Direction)
 
 		previousVertex = currentVertex
 
@@ -85,10 +81,39 @@ func (g *Graph) CreateEdges(lab *Map) []*Node {
 	return nodes_walked
 }
 
+func (g *Graph) PrintGraphVisulisation() {
+	fmt.Println("***********Graph************")
+
+	for _, node := range g.Nodes {
+		fmt.Println("-----------Node------------")
+		fmt.Printf("reference: %v\n Value: %v\n", &node, node)
+		fmt.Println("---------------------------")
+		fmt.Println("-----------Edges-----------")
+		for _, edge := range node.Edges {
+			fmt.Printf("edge ref: %v\n direction: %v\n", &edge, edge.Direction)
+		}
+		fmt.Println("---------------------------")
+	}
+	fmt.Println("********************************")
+}
+
 /*
-given that two point correspond to a node in the graph, Try to walk from the start point to the endpoint,
-returning a boolean to indicate if walk was successful along with the nodes traversed,(Excluing the start and end Nodes)
-otherwise. If the path in unreachable false is returned with an accompaning error message
+Counts the number of edges across all Nodes
+*/
+func (g *Graph) CalculateGraphSize() int {
+	number_edges := 0
+	for _, node := range g.Nodes {
+		for range node.Edges {
+			number_edges += 1
+		}
+	}
+	return number_edges
+}
+
+/*
+given that two points correspond to a node in the graph, Try to walk between the two endpoints,
+returning a boolean to indicate if walk was successful along with the nodes traversed, (Excluing the start and end Nodes)
+otherwise, if the path in unreachable false is returned with an accompaning error message
 */
 func (g *Graph) WalkGraphFromNode(startPoint, endPoint Point, direction string) (bool, []*Node, error) {
 	currentNode, ok := g.Nodes[startPoint]
@@ -100,8 +125,8 @@ func (g *Graph) WalkGraphFromNode(startPoint, endPoint Point, direction string) 
 	if !ok {
 		return false, nil, errors.New("No node at the specified end position")
 	}
-	path := make([]*Node, 0)
 
+	path := make([]*Node, 0)
 	for {
 		nextNode, error := currentNode.Walk(direction)
 

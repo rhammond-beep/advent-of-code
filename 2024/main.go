@@ -23,14 +23,14 @@ func main() {
 	graph := day6.CreateEmptyGraph(input)
 	graph.CreateEdges(&lab)
 
-	_, nodes, error := graph.WalkGraphFromNode(day6.Point{X: 0, Y: 4}, day6.Point{X: 7, Y: 8}, "east")
+	_, nodes, error := graph.WalkGraphFromNode(day6.Point{X: 0, Y: 4}, day6.Point{X: 3, Y: 2}, "east")
 
 	if error != nil {
 		fmt.Printf("Error Encountered while walking tree: %v", error.Error())
 	}
 
 	for i, node := range nodes {
-		fmt.Printf("Order Visited: %v Node Value: %v\n", i, node)
+		fmt.Printf("Order Visited: %v Node Value: %v\n", i+1, node)
 	}
 
 	// fmt.Println("***********Graph************")

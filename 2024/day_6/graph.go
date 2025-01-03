@@ -1,6 +1,9 @@
 package day6
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 /*
 The space representing the patrol path of the guard and the obstructions he encounters
@@ -84,7 +87,8 @@ func (g *Graph) CreateEdges(lab *Map) []*Node {
 
 /*
 given that two point correspond to a node in the graph, Try to walk from the start point to the endpoint,
-returning a boolean to indicate if walk was successful along with the nodes traversed, otherwise returning false and nil
+returning a boolean to indicate if walk was successful along with the nodes traversed,(Excluing the start and end Nodes)
+otherwise. If the path in unreachable false is returned with an accompaning error message
 */
 func (g *Graph) WalkGraphFromNode(startPoint, endPoint Point, direction string) (bool, []*Node, error) {
 	currentNode, ok := g.Nodes[startPoint]
@@ -100,7 +104,6 @@ func (g *Graph) WalkGraphFromNode(startPoint, endPoint Point, direction string) 
 
 	for {
 		nextNode, error := currentNode.Walk(direction)
-		path = append(path, nextNode)
 
 		if error != nil {
 			return false, path, error
@@ -109,6 +112,8 @@ func (g *Graph) WalkGraphFromNode(startPoint, endPoint Point, direction string) 
 		if nextNode == endNode {
 			return true, path, nil
 		}
+
+		path = append(path, nextNode)
 
 		direction = directionMap[direction]
 		currentNode = nextNode
@@ -125,7 +130,7 @@ func (n *Node) Walk(direction string) (*Node, error) {
 		}
 	}
 
-	return nil, errors.New("No edge with that direction found")
+	return nil, errors.New(fmt.Sprintf("No edge with direction %v found from node %v", direction, n))
 }
 
 /*

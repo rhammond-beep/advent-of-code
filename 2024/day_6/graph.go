@@ -64,6 +64,40 @@ func (g *Graph) CreateEdges(lab *Map) []*Node {
 	return nodes_walked
 }
 
+/*
+After placing in the new obstacle, do we visit the same edge twice?
+*/
+func (g *Graph) DetectCycle(lab *Map) (bool, []Node) {
+	edgesTraversed := make(map[Point]*Edge, 0) // for a given position, have we gone through a given edge (essentially a set implementation)
+	nodesTraversed := make([]Node, 0)
+
+	for {
+		foundBarrier, exited := lab.WalkUntilBarrierFound()
+		currentVertex := g.Nodes[foundBarrier]
+		if currentVertex != nil {
+
+			nodesTraversed = append(nodesTraversed, *currentVertex)
+		}
+
+		edge := &Edge{Direction: lab.Direction, Node: currentVertex}
+
+		_, exists := edgesTraversed[foundBarrier]
+		if exists {
+			return true, nodesTraversed
+		}
+
+		edgesTraversed[foundBarrier] = edge
+
+		lab.SetGuardDirection(foundBarrier)
+
+		if exited {
+			break
+		}
+	}
+
+	return false, nodesTraversed
+}
+
 func (g *Graph) PrintGraphVisulisation() {
 	fmt.Println("***********Graph************")
 

@@ -1,7 +1,6 @@
 package day7
 
 import (
-	"fmt"
 	"strings"
 
 	helper "github.com/rhammond-beep/advent-of-code-go-helper"
@@ -24,6 +23,8 @@ func SolveDay7Part1() int {
 		"292: 11 6 16 20",
 	}
 
+	sum := 0
+
 	for _, input := range puzzleInput {
 		result, operands, _ := strings.Cut(input, ":")
 		operands = strings.TrimSpace(operands)
@@ -35,10 +36,10 @@ func SolveDay7Part1() int {
 		}
 		equation := &Equation{Result: helper.ExtractInt(result), Operands: Operands}
 
-		fmt.Println(equation)
+		if equation.DoesEvaluateToResult() {
+			sum += equation.Result
+		}
 	}
-
-	sum := 0
 
 	return sum
 }
@@ -48,6 +49,34 @@ type Equation struct {
 	Operands []int
 }
 
-func (e *Equation) CanEvaluate() bool {
-	return true
+/*
+It can be any combination of additions and multiplys!!
+
+This makes it somewhat more interesting. What would the best way of doing it be???
+
+surely it makes sense to come up with some set of permutations which represents the full spectrum of possibilities based on the input...
+*/
+func (e *Equation) DoesEvaluateToResult() bool {
+
+	sum_result := 0
+	// try adding
+	for _, operand := range e.Operands {
+		sum_result += operand
+	}
+
+	if sum_result != e.Result {
+		sum_result = e.Operands[0] * e.Operands[1]
+		if len(e.Operands) > 2 {
+			for i := 2; i < len(e.Operands)-1; i++ {
+				sum_result *= e.Operands[i]
+
+			}
+		}
+	}
+
+	if sum_result == e.Result {
+		return true
+	}
+
+	return false
 }

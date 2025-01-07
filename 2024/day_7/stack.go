@@ -25,11 +25,16 @@ func (s *Stack[SE]) Push(se SE) {
 	s.data = append(s.data, se)
 }
 
+/*
+Pop and element from the stack, or if no elements on stack, return
+a populated error message
+*/
 func (s *Stack[SE]) Pop() (*SE, error) {
-	n := len(s.data) - 1
-	if n == -1 {
+	if len(s.data) == 0 {
 		return nil, errors.New("Stack Empty")
 	}
+
+	n := len(s.data) - 1
 	element := s.data[n]
 	s.data = s.data[:n]
 	return &element, nil
@@ -37,17 +42,27 @@ func (s *Stack[SE]) Pop() (*SE, error) {
 
 func TestStack() {
 	var s Stack[int]
+	s.Push(1)
+	s.Push(2)
+	s.Push(3)
 
-	// s.Push(1)
-	// s.Push(2)
-	// s.Push(3)
+	for {
+		val, error := s.Pop()
+		if error != nil {
+			break
+		}
+		fmt.Println(*val)
+	}
 
-	val, error := s.Pop()
+	var strStack Stack[string]
+	strStack.Push("world")
+	strStack.Push("hello")
 
-	if error != nil {
-		fmt.Println(error)
-	} else {
-
+	for {
+		val, error := strStack.Pop()
+		if error != nil {
+			break
+		}
 		fmt.Println(*val)
 	}
 }

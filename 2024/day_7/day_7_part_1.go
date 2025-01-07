@@ -114,10 +114,10 @@ For each pair of operands, we'll need to try every operation avaliable to us (in
 */
 func (e *Equation) DoesEvaluateToResult() bool {
 
-	operand_positions := len(e.Operands) - 1 // the number of places the operands can go...
+	// operand_positions := len(e.Operands) - 1 // the number of places the operands can go...
 
 	// construct the set containing all possible permutations of n elements, where n = operand_positions
-	positionMap := make(map[int][]rune)
+	// positionMap := make(map[int][]rune)
 
 	// cycle through possible combinations of the Operators (each operator needs a go in a given position)
 	// if you get a match then return true

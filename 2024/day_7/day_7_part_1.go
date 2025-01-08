@@ -1,6 +1,7 @@
 package day7
 
 import (
+	// "fmt"
 	"strings"
 
 	helper "github.com/rhammond-beep/advent-of-code-go-helper"
@@ -43,6 +44,27 @@ func SolveDay7Part1() int {
 	}
 
 	return sum
+}
+
+/*
+For a given input string, create a list of all the possible permutations
+As always, with recursion, we need to know where to stop.
+*/
+func ConstructPermutations(index int, s []rune, answer *[][]rune) {
+	if index == len(s) { // we reached some unique permutation, so add it
+		*answer = append(*answer, s)
+		return
+	}
+
+	for i := index; i < len(s); i++ {
+		swap(s, index, i)
+		ConstructPermutations(index+1, s, answer)
+		swap(s, index, i) // undo
+	}
+}
+
+func swap(s []rune, i, j int) {
+	s[i], s[j] = s[j], s[i]
 }
 
 /*

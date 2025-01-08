@@ -5,6 +5,9 @@ import (
 	"fmt"
 )
 
+/*
+The union type includes all of Go's natively supported types
+*/
 type StackElement interface {
 	int | int8 | int16 | rune | int64 | string | bool
 }

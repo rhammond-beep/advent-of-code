@@ -18,7 +18,6 @@ func runSimulation(input []string) int {
 		if exited {
 			return obstacleMap.CountUniquePositionsVisited()
 		}
-
 		obstacleMap.SetGuardDirection(foundBarrier)
 	}
 

@@ -6,10 +6,12 @@ import (
 )
 
 func main() {
-	output := [][]rune{}
-	day7.ConstructPermutations(0, []rune{'A', 'B'}, &output)
+	//perm := &day7.Permutations{Input: []rune{'A', 'B', 'C'}, Answer: make([][]rune, 0)}
+	//perm.ConstructPermutations(0)
 
-	for _, perm := range output {
-		fmt.Printf("Computed Permutation %v", perm)
-	}
+	//for _, inst := range perm.Answer {
+	//	fmt.Printf("Computed Permutation %v\n", string(inst))
+	//}
+
+	fmt.Println(day7.SolveDay7Part1())
 }

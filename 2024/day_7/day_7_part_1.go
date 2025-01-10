@@ -1,10 +1,8 @@
 package day7
 
 import (
-	// "fmt"
-	"strings"
-
 	helper "github.com/rhammond-beep/advent-of-code-go-helper"
+	"strings"
 )
 
 /*
@@ -24,48 +22,101 @@ func SolveDay7Part1() int {
 		"292: 11 6 16 20",
 	}
 
-	sum := 0
+	calculation := 0
 
 	for _, input := range puzzleInput {
 		result, operands, _ := strings.Cut(input, ":")
 		operands = strings.TrimSpace(operands)
 
-		Operands := make([]int, 0)
+		int_operands := make([]int, 0)
+		result_int := helper.ExtractInt(result)
 
 		for _, operand := range strings.Split(operands, " ") {
-			Operands = append(Operands, helper.ExtractInt(operand))
+			int_operands = append(int_operands, helper.ExtractInt(operand))
 		}
 
-		equation := &Equation{Result: helper.ExtractInt(result), Operands: Operands, Operators: []rune{'+', '*'}}
+		// for a given input of len(Operands) - 1 call it n.
+		// construct a list of binary strings, where each element represents a valid permutation E.G:
+		// len(operands) = 4, therefore n = 3, which maps to 2^3 possible values, as for each position we have
+		// two choices (1 or 0) giving 2! * 2! * 2! = 2^n
+		// hence when mapping this out to the set of possible values we get:
+		// [000, 001, 010, 011, 100, 101, 110, 111]
+		// if we let 0 = + and 1 = *, this maps to:
+		// [+++, ++*, +*+, +**, *++, *+*, **+, ***]
+		// which can be used to construct the set of all valid equations
+		// This binary representation is nice, and easy enough to extend out, as for each supported operator, we increment
+		// the number of distinct choices per operand, for example, lets say for arguments sake, that we now support - and %
+		// for each pair of operand, we now have 4 choices, meaning in our previous example, we now have (4! * 4! * 4!). A very big number
+		// indeed - 13824 possibilities. to be precise. This seems quite bad actually.
+		// This smells like a backtracking problem!
 
-		if equation.DoesEvaluateToResult() {
-			sum += equation.Result
+		if canMakeValidEquation(result_int, int_operands) {
+			calculation += result_int
 		}
+
 	}
 
-	return sum
+	return calculation
+}
+
+/*
+This seems to fit the backtracking problem definition
+*/
+func canMakeValidEquation(target int, operands []int) bool {
+	if len(operands) == 0 { // if after all our operations are performed the target is 0, then it's valid
+		return target == 0
+	}
+
+	for i := 0; i < len(operands); i++ {
+		return canMakeValidEquation(target-operands[i], operands[i+1:]) || canMakeValidEquation(target/operands[i], operands[i+1:])
+	}
+
+	return false
+}
+
+type Permutations struct {
+	Input  []rune
+	Answer [][]rune
+}
+
+func (p *Permutations) ConstructPermutations(index int) {
+	if index == len(p.Input) { // we reached some unique permutation, so add it
+		newPerm := make([]rune, len(p.Input)) // need to make sure the slice is the same size or no elements will be copied!
+		copy(newPerm, p.Input)
+		p.Answer = append(p.Answer, newPerm)
+		return
+	}
+
+	for i := index; i < len(p.Input); i++ {
+		swap(p.Input, index, i)
+		p.ConstructPermutations(index + 1)
+		swap(p.Input, index, i) // undo
+	}
+}
+
+/*
+Simply swap two elements at a given index
+*/
+func swap(s []rune, i, j int) {
+	s[i], s[j] = s[j], s[i]
 }
 
 /*
 For a given input string, create a list of all the possible permutations
 As always, with recursion, we need to know where to stop.
 */
-func ConstructPermutations(index int, s []rune, answer *[][]rune) {
-	if index == len(s) { // we reached some unique permutation, so add it
-		*answer = append(*answer, s)
-		return
-	}
-
-	for i := index; i < len(s); i++ {
-		swap(s, index, i)
-		ConstructPermutations(index+1, s, answer)
-		swap(s, index, i) // undo
-	}
-}
-
-func swap(s []rune, i, j int) {
-	s[i], s[j] = s[j], s[i]
-}
+// func ConstructPermutations(index int, s []rune, answer [][]rune) {
+// 	if index == len(s) { // we reached some unique permutation, so add it
+// 		answer = append(answer, s)
+// 		return
+// 	}
+//
+// 	for i := index; i < len(s); i++ {
+// 		swap(s, index, i)
+// 		ConstructPermutations(index+1, s, answer)
+// 		swap(s, index, i) // undo
+// 	}
+// }
 
 /*
 Comprised of a result, operands and operatrors

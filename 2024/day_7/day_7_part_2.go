@@ -56,18 +56,8 @@ func canMakeValidEquation2(target int, operands []int) bool {
 	}
 
 	var tmp int
-	var buffer bytes.Buffer // Cat strings
-	buffer.WriteString(strconv.Itoa(operands[0]))
-	buffer.WriteString(strconv.Itoa(operands[1]))
-	cat_val := helper.ExtractInt(buffer.String())
 
 	tmp = operands[1]
-	operands[1] = cat_val
-	if canMakeValidEquation2(target, operands[1:]) {
-		return true
-	}
-	operands[1] = tmp
-
 	add := operands[0] + operands[1]
 	operands[1] = add
 	if canMakeValidEquation2(target, operands[1:]) {
@@ -78,6 +68,18 @@ func canMakeValidEquation2(target int, operands []int) bool {
 	multiply := operands[0] * operands[1]
 	tmp = operands[1]
 	operands[1] = multiply
+	if canMakeValidEquation2(target, operands[1:]) {
+		return true
+	}
+	operands[1] = tmp
+
+	var buffer bytes.Buffer // Cat strings
+	buffer.WriteString(strconv.Itoa(operands[0]))
+	buffer.WriteString(strconv.Itoa(operands[1]))
+	cat_val := helper.ExtractInt(buffer.String())
+
+	tmp = operands[1]
+	operands[1] = cat_val
 	if canMakeValidEquation2(target, operands[1:]) {
 		return true
 	}

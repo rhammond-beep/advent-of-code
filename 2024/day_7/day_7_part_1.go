@@ -10,17 +10,7 @@ Return the total number of the equations which could be made valid using only th
 */
 func SolveDay7Part1() int {
 
-	puzzleInput := []string{
-		"190: 10 19",
-		"3267: 81 40 27",
-		"83: 17 5",
-		"156: 15 6",
-		"7290: 6 8 6 15",
-		"161011: 16 10 13",
-		"192: 17 8 14",
-		"21037: 9 7 18 13",
-		"292: 11 6 16 20",
-	}
+	puzzleInput := helper.ReadChallengeInput("./day_7/day7_input.txt")
 
 	calculation := 0
 
@@ -67,8 +57,13 @@ func canMakeValidEquation(target int, operands []int) bool {
 		return target == 0
 	}
 
-	for i := 0; i < len(operands); i++ {
-		return canMakeValidEquation(target-operands[i], operands[i+1:]) || canMakeValidEquation(target/operands[i], operands[i+1:])
+	for i := len(operands) - 1; i >= 0; i-- {
+		left_branch := canMakeValidEquation(target-operands[i], operands[:i])
+
+		valid_division := target%(operands[i]) == 0
+		right_branch := valid_division && canMakeValidEquation(target/operands[i], operands[:i])
+
+		return left_branch || (right_branch && valid_division)
 	}
 
 	return false

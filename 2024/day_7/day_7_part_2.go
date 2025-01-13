@@ -51,35 +51,37 @@ func SolveDay7Part2() int {
 }
 
 func canMakeValidEquation2(target int, operands []int) bool {
-	if len(operands) == 0 { // if after all our operations are performed the target is 0, then it's valid
-		return target == 0
+	if len(operands) == 1 {
+		return operands[0] == target
 	}
 
-	for i := len(operands) - 1; i >= 0; i-- {
-		if i > 0 { // handle the append operation first, we want to try to explore concatenated combinations first before moving on
-			var buffer bytes.Buffer
-			buffer.WriteString(strconv.Itoa(operands[i-1]))
-			buffer.WriteString(strconv.Itoa(operands[i]))
+	var tmp int
+	var buffer bytes.Buffer // Cat strings
+	buffer.WriteString(strconv.Itoa(operands[0]))
+	buffer.WriteString(strconv.Itoa(operands[1]))
+	cat_val := helper.ExtractInt(buffer.String())
 
-			conceternate_branch := helper.ExtractInt(buffer.String())
-
-			cat_operands := make([]int, len(operands))
-			copy(cat_operands, operands)
-
-			cat_operands = append(cat_operands[:i], cat_operands[i+1:]...) // remove the element and shift all to the right
-			cat_operands[i-1] = conceternate_branch
-
-			if canMakeValidEquation2(target, cat_operands) { // this should generate a bunch more combinations for our core operations but it doesn't work properly or as you would expect it to.
-				return true
-			}
-		}
-
-		plus_branch := canMakeValidEquation2(target-operands[i], operands[:i])
-		valid_division := target%(operands[i]) == 0
-		multiply_branch := valid_division && canMakeValidEquation2(target/operands[i], operands[:i])
-
-		return plus_branch || (multiply_branch && valid_division)
+	tmp = operands[1]
+	operands[1] = cat_val
+	if canMakeValidEquation2(target, operands[1:]) {
+		return true
 	}
+	operands[1] = tmp
+
+	add := operands[0] + operands[1]
+	operands[1] = add
+	if canMakeValidEquation2(target, operands[1:]) {
+		return true
+	}
+	operands[1] = tmp
+
+	multiply := operands[0] * operands[1]
+	tmp = operands[1]
+	operands[1] = multiply
+	if canMakeValidEquation2(target, operands[1:]) {
+		return true
+	}
+	operands[1] = tmp
 
 	return false
 }

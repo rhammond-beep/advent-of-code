@@ -13,5 +13,5 @@ func main() {
 	//	fmt.Printf("Computed Permutation %v\n", string(inst))
 	//}
 
-	fmt.Println(day7.SolveDay7Part1())
+	fmt.Println(day7.SolveDay7Part2())
 }

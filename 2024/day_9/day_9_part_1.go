@@ -1,24 +1,27 @@
 package day9
 
 import (
-	helper "github.com/rhammond-beep/advent-of-code-go-helper"
-)
+	"fmt"
 
-var (
-	file_num, free_space int
+	helper "github.com/rhammond-beep/advent-of-code-go-helper"
 )
 
 func SolveDay9Part1() {
 
 	puzzleInput := "2333133121414131402"
+	files := make([]*File, 0)
+	n := len(puzzleInput)
 
-	for i := 0; i < len(puzzleInput); i += 2 {
+	for i := 0; i < n-1; i += 2 {
+		file_number := helper.ExtractInt(string(puzzleInput[i]))
+		free_space := helper.ExtractInt(string(puzzleInput[i+1]))
+		files = append(files, &File{ID: i / 2, NumberOfFiles: file_number, FreeSpace: free_space})
+	}
 
-		if i%2 == 0 {
-			file_num = helper.ExtractInt(string(puzzleInput[i]))
-		} else {
-			free_space = helper.ExtractInt(string(puzzleInput[i]))
-		}
+	files = append(files, &File{ID: len(files), NumberOfFiles: helper.ExtractInt(string(puzzleInput[n-1]))})
+
+	for _, file := range files {
+		fmt.Println(file.String())
 	}
 
 }
@@ -27,4 +30,8 @@ type File struct {
 	ID            int
 	NumberOfFiles int
 	FreeSpace     int
+}
+
+func (f *File) String() string {
+	return fmt.Sprintf("ID: %v, Number of Files: %v, FreeSpace: %v", f.ID, f.NumberOfFiles, f.FreeSpace)
 }

@@ -6,8 +6,7 @@ import (
 )
 
 func SolveDay9Part1() {
-	puzzleInput := "12345"
-	// puzzleInput := helper.ReadChallengeInputContigious("./day9_puzzle_input.txt")
+	puzzleInput := helper.ReadChallengeInputContigious("./day_9/day9_puzzle_input.txt")
 	disk := make([]*MemoryBlock, 0)
 	n := len(puzzleInput)
 	size := 0
@@ -23,10 +22,18 @@ func SolveDay9Part1() {
 	size += helper.ExtractInt(string(puzzleInput[n-1]))
 
 	uncompressed := createUncompressedRepresentation(disk, size)
-	fmt.Println(uncompressed)
 	compressed := compress(uncompressed)
-	fmt.Println(compressed)
-	//fmt.Println(calculateChecksum(compressed))
+
+	checkSum := 0
+
+	for i := 0; i < len(compressed)-1; i++ {
+		if compressed[i] == -1 {
+			break
+		}
+		checkSum += (compressed[i] * i)
+	}
+
+	fmt.Println(checkSum)
 }
 
 type MemoryBlock struct {
@@ -80,7 +87,7 @@ func compress(memoryBlocks []int) []int {
 	j := len(memoryBlocks) - 1
 
 	for {
-		if memoryBlocks[i] == -1 && memoryBlocks[j] == -1 {
+		if i == j { // no need to keep swapping when we reach the mid point as all elements will have been evaluated.
 			break
 		}
 
@@ -89,7 +96,12 @@ func compress(memoryBlocks []int) []int {
 			continue
 		}
 
-		memoryBlocks[i], memoryBlocks[j] = memoryBlocks[j], memoryBlocks[i] // swap
+		if memoryBlocks[j] == -1 { // find a valid swap candidate
+			j -= 1
+			continue
+		}
+
+		memoryBlocks[i], memoryBlocks[j] = memoryBlocks[j], memoryBlocks[i]
 		i += 1
 		j -= 1
 	}

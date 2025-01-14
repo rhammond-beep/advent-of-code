@@ -1,17 +1,7 @@
 package main
 
-import (
-	"fmt"
-	day7 "rupert-hammond-aoc/day_7"
-)
+import day9 "rupert-hammond-aoc/day_9"
 
 func main() {
-	//perm := &day7.Permutations{Input: []rune{'A', 'B', 'C'}, Answer: make([][]rune, 0)}
-	//perm.ConstructPermutations(0)
-
-	//for _, inst := range perm.Answer {
-	//	fmt.Printf("Computed Permutation %v\n", string(inst))
-	//}
-
-	fmt.Println(day7.SolveDay7Part2())
+	day9.SolveDay9Part1()
 }

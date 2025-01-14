@@ -2,13 +2,12 @@ package day9
 
 import (
 	"fmt"
-
 	helper "github.com/rhammond-beep/advent-of-code-go-helper"
 )
 
 func SolveDay9Part1() {
-	// puzzleInput := "2333133121414131402"
 	puzzleInput := "12345"
+	// puzzleInput := helper.ReadChallengeInputContigious("./day9_puzzle_input.txt")
 	disk := make([]*MemoryBlock, 0)
 	n := len(puzzleInput)
 	size := 0
@@ -23,13 +22,11 @@ func SolveDay9Part1() {
 	disk = append(disk, &MemoryBlock{ID: len(disk), NumberOfFiles: helper.ExtractInt(string(puzzleInput[n-1]))})
 	size += helper.ExtractInt(string(puzzleInput[n-1]))
 
-	uncompressed_format := createUncompressedRepresentation(disk, size)
-	fmt.Println(uncompressed_format)
-
-	// for _, file := range disk {
-	// 	fmt.Println(file.String())
-	// }
-
+	uncompressed := createUncompressedRepresentation(disk, size)
+	fmt.Println(uncompressed)
+	compressed := compress(uncompressed)
+	fmt.Println(compressed)
+	//fmt.Println(calculateChecksum(compressed))
 }
 
 type MemoryBlock struct {
@@ -78,20 +75,24 @@ there are no remaining gaps between file blocks). For the disk map 12345, the pr
 The stopping condition is where there are no more gaps inbetween memory blocks... i.e. the FreeSpace on each block
 is 0.
 */
-// func compress(memoryBlocks []*MemoryBlock) []int {
-// 	compressed_memory_space := make([]int, 0)
-// 	mi := 0
-// 	write_location := 0 // offset into the compressed memory space
-// 	swap_location :=
-//
-// 	for i := len(memoryBlocks) - 1; i > 0; i++ {
-//
-// 		for j := write_location; j < write_location+memoryBlocks[mi].NumberOfFiles; j++ { // write in the earliest file contents
-// 			compressed_memory_space[j] = memoryBlocks[mi].ID
-// 		}
-//
-// 	}
-//
-// 	return compressed_memory_space
-// }
-//
+func compress(memoryBlocks []int) []int {
+	i := 0
+	j := len(memoryBlocks) - 1
+
+	for {
+		if memoryBlocks[i] == -1 && memoryBlocks[j] == -1 {
+			break
+		}
+
+		if memoryBlocks[i] != -1 { // find a free spot
+			i += 1
+			continue
+		}
+
+		memoryBlocks[i], memoryBlocks[j] = memoryBlocks[j], memoryBlocks[i] // swap
+		i += 1
+		j -= 1
+	}
+
+	return memoryBlocks
+}

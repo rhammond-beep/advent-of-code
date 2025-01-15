@@ -89,13 +89,14 @@ if it doesn't then just move onto the next record from the front, keeping a poin
 func compressFiles(memoryBlocks []*MemoryBlock, size int) []int {
 	compressed_format := make([]int, size)
 
+	for i := 0; i < size; i++ {
+		compressed_format[i] = -1
+	}
+
 	i := 0
 	j := len(memoryBlocks) - 1
 	offset_start := 0
 	offset_end := 0
-
-	// offset_start_free := memoryBlocks[0].NumberOfFiles
-	// offset_end_free := memoryBlocks[0].NumberOfFiles + memoryBlocks[0].FreeSpace
 
 	for {
 		if i == j { // when we get to the same record, we're done
@@ -121,7 +122,6 @@ func compressFiles(memoryBlocks []*MemoryBlock, size int) []int {
 		}
 
 		for z := offset_start; z < (memoryBlocks[i].FreeSpace + offset_start); z++ { // add in any free space
-			compressed_format[z] = -1
 			offset_end += 1
 		}
 		offset_start = offset_end

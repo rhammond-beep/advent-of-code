@@ -6,7 +6,8 @@ import (
 )
 
 func SolveDay9Part2() {
-	puzzleInput := helper.ReadChallengeInputContigious("./day_9/day9_puzzle_input.txt")
+	// puzzleInput := helper.ReadChallengeInputContigious("./day_9/day9_puzzle_input.txt")
+	puzzleInput := "2333133121414131402"
 	disk := make([]*MemoryBlock, 0)
 	n := len(puzzleInput)
 	size := 0
@@ -21,8 +22,8 @@ func SolveDay9Part2() {
 	disk = append(disk, &MemoryBlock{ID: len(disk), NumberOfFiles: helper.ExtractInt(string(puzzleInput[n-1]))})
 	size += helper.ExtractInt(string(puzzleInput[n-1]))
 
-	// uncompressed := createUncompressedRepresentation(disk, size)
-	compressed := compress(uncompressed)
+	compressed := compressFiles(disk, size)
+	fmt.Println(compressed)
 	// compressed := []int{0, 0, 9, 9, 2, 1, 1, 1, 7, 7, 7, -1, 4, 4, -1, 3, 3, 3, -1, -1, -1, -1, 5, 5, 5, 5, -1, 6, 6, 6, 6, -1, -1, -1, -1, -1, 8, 8, 8, 8, -1, -1}
 
 	checkSum := 0

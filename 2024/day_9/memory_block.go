@@ -74,3 +74,59 @@ func compress(memoryBlocks []int) []int {
 
 	return memoryBlocks
 }
+
+/*
+This time we want to compress the entire file as opposed to single blocks of the file
+
+The thing that's tricky about this approach, is we need to build the list on the fly...
+So I could do a hybrid approach here:
+Go through from the starting record, filling in the ID for the size of the file in the block
+
+assuming the block has free space, then check to see if the record will fit based in it's file size
+
+if it doesn't then just move onto the next record from the front, keeping a pointer to the last record we tried and repeat
+*/
+func compressFiles(memoryBlocks []*MemoryBlock, size int) []int {
+	compressed_format := make([]int, size)
+
+	i := 0
+	j := len(memoryBlocks) - 1
+	offset_start := 0
+	offset_end := 0
+
+	// offset_start_free := memoryBlocks[0].NumberOfFiles
+	// offset_end_free := memoryBlocks[0].NumberOfFiles + memoryBlocks[0].FreeSpace
+
+	for {
+		if i == j { // when we get to the same record, we're done
+			break
+		}
+
+		for z := offset_start; z < (memoryBlocks[i].NumberOfFiles + offset_start); z++ {
+			compressed_format[z] = memoryBlocks[i].ID
+			offset_end += 1
+		}
+		offset_start = offset_end
+
+		for x := j; x > i; x-- { // try every single file from the highest to the lowest
+			if memoryBlocks[x].NumberOfFiles <= memoryBlocks[i].FreeSpace { // load the new file into the free space
+				for z := offset_start; z < (memoryBlocks[x].NumberOfFiles + offset_start); z++ {
+					compressed_format[z] = memoryBlocks[x].ID
+					offset_end += 1
+				}
+				memoryBlocks[i].FreeSpace -= memoryBlocks[x].NumberOfFiles
+				offset_start = offset_end
+				j -= 1
+			}
+		}
+
+		for z := offset_start; z < (memoryBlocks[i].FreeSpace + offset_start); z++ { // add in any free space
+			compressed_format[z] = -1
+			offset_end += 1
+		}
+		offset_start = offset_end
+		i += 1
+	}
+
+	return compressed_format
+}

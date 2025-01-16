@@ -83,16 +83,16 @@ starting with the file with the highest file ID number. If there is no span of f
 */
 func compress2(denseRepresentation []int, mbs []*MemoryBlock) []int {
 
-	for j := len(mbs) - 1; j > 0; j-- { // for each file
-		for k := 0; k < j; k++ {
-			if mbs[k].FreeSpace >= mbs[j].NumberOfFiles {
-				for k := 0; k < mbs[j].NumberOfFiles; k++ {
-					w := mbs[k].Offset + mbs[k].NumberOfFiles + k     // write index calculation
-					r := mbs[j].Offset + mbs[j].NumberOfFiles - k - 1 // read index calculation
+	for i := len(mbs) - 1; i > 0; i-- { // for each file
+		for j := 0; j < i; j++ { // check and see if the ith file will fit in the jth position
+			if mbs[j].FreeSpace >= mbs[i].NumberOfFiles {
+				for k := 0; k < mbs[i].NumberOfFiles; k++ {
+					w := mbs[j].Offset + mbs[j].NumberOfFiles + k     // write index calculation
+					r := mbs[i].Offset + mbs[i].NumberOfFiles - k - 1 // read index calculation
 
 					denseRepresentation[w], denseRepresentation[r] = denseRepresentation[r], denseRepresentation[w]
 				}
-				mbs[k].FreeSpace -= mbs[j].NumberOfFiles
+				mbs[j].FreeSpace -= mbs[i].NumberOfFiles
 				break
 			}
 		}

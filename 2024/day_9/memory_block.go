@@ -6,6 +6,7 @@ type MemoryBlock struct {
 	ID            int
 	NumberOfFiles int
 	FreeSpace     int
+	Offset        int
 }
 
 func (mb *MemoryBlock) String() string {
@@ -76,6 +77,61 @@ func compress(memoryBlocks []int) []int {
 }
 
 /*
+This time, attempt to move whole files to the leftmost span of free space blocks that could fit the file.
+Attempt to move each file * Exactly once in order of decreasing file ID *
+starting with the file with the highest file ID number. If there is no span of free space to the left of a file that is large enough to fit the filethe file does not move.
+*/
+func compress2(denseRepresentation []int, mbs []*MemoryBlock) []int {
+
+	for j := len(mbs) - 1; j > 0; j-- { // for each file
+		for k := 0; k < j; k++ {
+			if mbs[k].FreeSpace >= mbs[j].NumberOfFiles {
+				for k := 0; k < mbs[j].NumberOfFiles; k++ {
+					w := mbs[k].Offset + mbs[k].NumberOfFiles + k     // write index calculation
+					r := mbs[j].Offset + mbs[j].NumberOfFiles - k - 1 // read index calculation
+
+					denseRepresentation[w], denseRepresentation[r] = denseRepresentation[r], denseRepresentation[w]
+				}
+				mbs[k].FreeSpace -= mbs[j].NumberOfFiles
+				break
+			}
+		}
+	}
+
+	return denseRepresentation
+}
+
+//func compress2(denseRepresentation []int, mb []*MemoryBlock) []int {
+//	j := len(mb) - 1 // point to the place in memory being written
+//
+//	y := mb[0].NumberOfFiles          // Start at the first offset into memory
+//	z := len(denseRepresentation) - 1 // this pointer needs to be in sync with the
+//
+//	for i := 0; i < j; i++ {
+//		for x := j; x > i; x-- {
+//			if mb[i].FreeSpace >= mb[x].NumberOfFiles {
+//				id := mb[x].ID
+//				for {
+//					if denseRepresentation[z] != id {
+//						break
+//					}
+//
+//					denseRepresentation[y], denseRepresentation[z] = denseRepresentation[z], denseRepresentation[y]
+//					y += 1
+//					z -= 1
+//
+//				}
+//				mb[i].FreeSpace -= mb[x].NumberOfFiles
+//			}
+//			j -= 1
+//		}
+//
+//	}
+//
+//	return denseRepresentation
+//}
+
+/*
 This time we want to compress the entire file as opposed to single blocks of the file
 
 The thing that's tricky about this approach, is we need to build the list on the fly...
@@ -86,7 +142,7 @@ assuming the block has free space, then check to see if the record will fit base
 
 if it doesn't then just move onto the next record from the front, keeping a pointer to the last record we tried and repeat
 */
-func compressFiles(memoryBlocks []*MemoryBlock, size int) []int {
+func compressFiles(denseRepresentation []*MemoryBlock, size int) []int {
 	compressed_format := make([]int, size)
 
 	for i := 0; i < size; i++ {
@@ -94,7 +150,7 @@ func compressFiles(memoryBlocks []*MemoryBlock, size int) []int {
 	}
 
 	i := 0
-	j := len(memoryBlocks) - 1
+	j := len(denseRepresentation) - 1
 	offset_start := 0
 	offset_end := 0
 
@@ -103,25 +159,25 @@ func compressFiles(memoryBlocks []*MemoryBlock, size int) []int {
 			break
 		}
 
-		for z := offset_start; z < (memoryBlocks[i].NumberOfFiles + offset_start); z++ {
-			compressed_format[z] = memoryBlocks[i].ID
+		for z := offset_start; z < (denseRepresentation[i].NumberOfFiles + offset_start); z++ {
+			compressed_format[z] = denseRepresentation[i].ID
 			offset_end += 1
 		}
 		offset_start = offset_end
 
 		for x := j; x > i; x-- { // try every single file from the highest to the lowest
-			if memoryBlocks[x].NumberOfFiles <= memoryBlocks[i].FreeSpace { // load the new file into the free space
-				for z := offset_start; z < (memoryBlocks[x].NumberOfFiles + offset_start); z++ {
-					compressed_format[z] = memoryBlocks[x].ID
+			if denseRepresentation[x].NumberOfFiles <= denseRepresentation[i].FreeSpace { // load the new file into the free space
+				for z := offset_start; z < (denseRepresentation[x].NumberOfFiles + offset_start); z++ {
+					compressed_format[z] = denseRepresentation[x].ID
 					offset_end += 1
 				}
-				memoryBlocks[i].FreeSpace -= memoryBlocks[x].NumberOfFiles
+				denseRepresentation[i].FreeSpace -= denseRepresentation[x].NumberOfFiles
 				offset_start = offset_end
 				j -= 1
 			}
 		}
 
-		for z := offset_start; z < (memoryBlocks[i].FreeSpace + offset_start); z++ { // add in any free space
+		for z := offset_start; z < (denseRepresentation[i].FreeSpace + offset_start); z++ { // add in any free space
 			offset_end += 1
 		}
 		offset_start = offset_end

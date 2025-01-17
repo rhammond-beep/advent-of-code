@@ -94,97 +94,10 @@ func compress2(denseRepresentation []int, mbs []*MemoryBlock) []int {
 				}
 				mbs[j].WriteOffset += mbs[i].NumberOfFiles
 				mbs[j].FreeSpace -= mbs[i].NumberOfFiles
-				fmt.Println(denseRepresentation)
 				break
 			}
 		}
 	}
 
 	return denseRepresentation
-}
-
-//func compress2(denseRepresentation []int, mb []*MemoryBlock) []int {
-//	j := len(mb) - 1 // point to the place in memory being written
-//
-//	y := mb[0].NumberOfFiles          // Start at the first offset into memory
-//	z := len(denseRepresentation) - 1 // this pointer needs to be in sync with the
-//
-//	for i := 0; i < j; i++ {
-//		for x := j; x > i; x-- {
-//			if mb[i].FreeSpace >= mb[x].NumberOfFiles {
-//				id := mb[x].ID
-//				for {
-//					if denseRepresentation[z] != id {
-//						break
-//					}
-//
-//					denseRepresentation[y], denseRepresentation[z] = denseRepresentation[z], denseRepresentation[y]
-//					y += 1
-//					z -= 1
-//
-//				}
-//				mb[i].FreeSpace -= mb[x].NumberOfFiles
-//			}
-//			j -= 1
-//		}
-//
-//	}
-//
-//	return denseRepresentation
-//}
-
-/*
-This time we want to compress the entire file as opposed to single blocks of the file
-
-The thing that's tricky about this approach, is we need to build the list on the fly...
-So I could do a hybrid approach here:
-Go through from the starting record, filling in the ID for the size of the file in the block
-
-assuming the block has free space, then check to see if the record will fit based in it's file size
-
-if it doesn't then just move onto the next record from the front, keeping a pointer to the last record we tried and repeat
-*/
-func compressFiles(denseRepresentation []*MemoryBlock, size int) []int {
-	compressed_format := make([]int, size)
-
-	for i := 0; i < size; i++ {
-		compressed_format[i] = -1
-	}
-
-	i := 0
-	j := len(denseRepresentation) - 1
-	offset_start := 0
-	offset_end := 0
-
-	for {
-		if i == j { // when we get to the same record, we're done
-			break
-		}
-
-		for z := offset_start; z < (denseRepresentation[i].NumberOfFiles + offset_start); z++ {
-			compressed_format[z] = denseRepresentation[i].ID
-			offset_end += 1
-		}
-		offset_start = offset_end
-
-		for x := j; x > i; x-- { // try every single file from the highest to the lowest
-			if denseRepresentation[x].NumberOfFiles <= denseRepresentation[i].FreeSpace { // load the new file into the free space
-				for z := offset_start; z < (denseRepresentation[x].NumberOfFiles + offset_start); z++ {
-					compressed_format[z] = denseRepresentation[x].ID
-					offset_end += 1
-				}
-				denseRepresentation[i].FreeSpace -= denseRepresentation[x].NumberOfFiles
-				offset_start = offset_end
-				j -= 1
-			}
-		}
-
-		for z := offset_start; z < (denseRepresentation[i].FreeSpace + offset_start); z++ { // add in any free space
-			offset_end += 1
-		}
-		offset_start = offset_end
-		i += 1
-	}
-
-	return compressed_format
 }

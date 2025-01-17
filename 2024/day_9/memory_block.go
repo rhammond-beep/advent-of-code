@@ -6,7 +6,7 @@ type MemoryBlock struct {
 	ID            int
 	NumberOfFiles int
 	FreeSpace     int
-	Offset        int
+	WriteOffset   int
 }
 
 func (mb *MemoryBlock) String() string {
@@ -87,12 +87,14 @@ func compress2(denseRepresentation []int, mbs []*MemoryBlock) []int {
 		for j := 0; j < i; j++ { // check and see if the ith file will fit in the jth position
 			if mbs[j].FreeSpace >= mbs[i].NumberOfFiles {
 				for k := 0; k < mbs[i].NumberOfFiles; k++ {
-					w := mbs[j].Offset + mbs[j].NumberOfFiles + k     // write index calculation
-					r := mbs[i].Offset + mbs[i].NumberOfFiles - k - 1 // read index calculation
+					w := mbs[j].WriteOffset + mbs[j].NumberOfFiles + k     // write index calculation
+					r := mbs[i].WriteOffset + mbs[i].NumberOfFiles - k - 1 // read index calculation
 
 					denseRepresentation[w], denseRepresentation[r] = denseRepresentation[r], denseRepresentation[w]
 				}
+				mbs[j].WriteOffset += mbs[i].NumberOfFiles
 				mbs[j].FreeSpace -= mbs[i].NumberOfFiles
+				fmt.Println(denseRepresentation)
 				break
 			}
 		}

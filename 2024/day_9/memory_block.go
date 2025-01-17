@@ -7,6 +7,7 @@ type MemoryBlock struct {
 	NumberOfFiles int
 	FreeSpace     int
 	WriteOffset   int
+	ReadOffset    int
 }
 
 func (mb *MemoryBlock) String() string {
@@ -82,13 +83,12 @@ Attempt to move each file * Exactly once in order of decreasing file ID *
 starting with the file with the highest file ID number. If there is no span of free space to the left of a file that is large enough to fit the filethe file does not move.
 */
 func compress2(denseRepresentation []int, mbs []*MemoryBlock) []int {
-
 	for i := len(mbs) - 1; i > 0; i-- { // for each file
 		for j := 0; j < i; j++ { // check and see if the ith file will fit in the jth position
 			if mbs[j].FreeSpace >= mbs[i].NumberOfFiles {
 				for k := 0; k < mbs[i].NumberOfFiles; k++ {
-					w := mbs[j].WriteOffset + mbs[j].NumberOfFiles + k     // write index calculation
-					r := mbs[i].WriteOffset + mbs[i].NumberOfFiles - k - 1 // read index calculation
+					w := mbs[j].WriteOffset + k // write index calculation
+					r := mbs[i].ReadOffset + k  // read index calculation
 
 					denseRepresentation[w], denseRepresentation[r] = denseRepresentation[r], denseRepresentation[w]
 				}

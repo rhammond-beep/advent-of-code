@@ -36,6 +36,10 @@ func SolveDay7Part2() int {
 	return calculation
 }
 
+/*
+Recursively backtrack through the list of possibilities, returning true and winding up the
+stack when a valid permutation is found, otherwise, after search space has been exhausted, return false
+*/
 func canMakeValidEquation2(target int, operands []int) bool {
 	if len(operands) == 1 {
 		return operands[0] == target

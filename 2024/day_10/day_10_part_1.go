@@ -7,16 +7,7 @@ import (
 
 func SolveDay10Part1() int {
 
-	puzzleInput := []string{
-		"89010123",
-		"78121874",
-		"87430965",
-		"96549874",
-		"45678903",
-		"32019012",
-		"01329801",
-		"10456732",
-	}
+	puzzleInput := helper.ReadChallengeInput("./day_10/day_10_input.txt")
 	// need to transform this into a matrix of ints
 
 	lava_map := make([][]int, len(puzzleInput))
@@ -57,8 +48,8 @@ func calculateTrailHeadsScore(lava_map [][]int) (score int) {
 
 /*
 Given the position within the map (row, col), try to navigate to the sorrounding column
-
 update score through the recursive calls if a valid path has been found
+this will count the number of distinct valid paths to a given trail
 */
 func navigatePeaks(row, col int, lava_map [][]int) int {
 	score := 0

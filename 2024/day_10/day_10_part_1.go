@@ -16,18 +16,7 @@ type TopologicalMap struct {
 }
 
 func SolveDay10Part1() int {
-
-	puzzleInput := []string{
-		"89010123",
-		"78121874",
-		"87430965",
-		"96549874",
-		"45678903",
-		"32019012",
-		"01329801",
-		"10456732",
-	}
-	// need to transform this into a matrix of ints
+	puzzleInput := helper.ReadChallengeInput("./day_10/day_10_input.txt")
 
 	lava_map := make([][]int, len(puzzleInput))
 	peak_visited := make(map[Point]bool)
@@ -95,27 +84,6 @@ func (tm *TopologicalMap) clearVisited() {
 		tm.PeaksVisited[point] = false
 	}
 }
-
-/*
-A trail head is a 0 position Node within the map, starting from these trail heads
-
-how many 9's (Mountain peaks) can you navigate to? For each trail head this represents a score
-For each trail head, add up the score, this example is 36
-
-My initial thoughts here is to build a graph, but that seems costly, surely I can just>
-Find the trail head "0" in the map. Recursively backtrack through each each neighbouring node if
-we have a valid jump
-*/
-// func calculateTrailHeadsScore(lava_map [][]int) (score int) {
-// 	for i := 0; i < len(lava_map); i++ {
-// 		for j := 0; j < len(lava_map); j++ {
-// 			if lava_map[i][j] == 0 {
-// 				score += navigatePeaks(i, j, lava_map)
-// 			}
-// 		}
-// 	}
-// 	return
-// }
 
 /*
 Given the position within the map (row, col), try to navigate to the sorrounding column

@@ -1,10 +1,5 @@
 package day_10
 
-type Point struct {
-	X int
-	Y int
-}
-
 type Graph struct {
 	Nodes map[Point]*Node
 }

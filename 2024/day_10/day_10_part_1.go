@@ -11,7 +11,7 @@ type Point struct {
 }
 
 type TopologicalMap struct {
-	PeaksVisited map[*Point]bool
+	PeaksVisited map[Point]bool
 	TrailHeads   []*Point
 }
 
@@ -30,7 +30,7 @@ func SolveDay10Part1() int {
 	// need to transform this into a matrix of ints
 
 	lava_map := make([][]int, len(puzzleInput))
-	peak_visited := make(map[*Point]bool)
+	peak_visited := make(map[Point]bool)
 	trail_heads := make([]*Point, 0)
 
 	for i := 0; i < len(puzzleInput); i++ {
@@ -47,7 +47,7 @@ func SolveDay10Part1() int {
 			}
 
 			if lava_line[j] == 9 {
-				peak_visited[point] = false
+				peak_visited[*point] = false
 			}
 
 		}

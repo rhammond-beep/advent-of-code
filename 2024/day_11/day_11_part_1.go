@@ -62,7 +62,7 @@ I'm tempted to shift everything off to the right, but then the outer loop is goi
 unless I can find some clever way of skipping an interation
 */
 func (p *Pebble) createSpaceAndInsertStones(leftStone, rightstone int64, i int) {
-	p.Line = append(p.Line[:i+1], p.Line[i:]...)
+	p.Line = append(p.Line[:i+1], p.Line[i:]...) // use the unpack operator to add in the rest of the array "effectively duplicaing the ith position
 	p.Line[i] = leftStone
 	p.Line[i+1] = rightstone
 }
@@ -76,6 +76,6 @@ func checkEvenDigits(digits int64) (bool, string) {
 Define the contract for a mysterious plutonian entity
 */
 type Plutonian interface {
-	blink()
-	stones() int
+	blink()      // Blink and you'll miss it
+	stones() int // How many magic stones are left to count
 }

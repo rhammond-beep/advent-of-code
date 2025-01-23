@@ -16,7 +16,7 @@ no matter how the stones change, their order is preserved, and they can stay on 
 */
 func SolveDay11Part1() {
 	var pp Plutonian
-	puzzleInput := []int{0, 1, 10, 99, 999}
+	puzzleInput := []int64{0, 1, 10, 99, 999}
 	// puzzleInput := []int64{70949 6183 4 3825336 613971 0 15 182}
 	pp = &Pebble{Line: puzzleInput}
 
@@ -28,7 +28,7 @@ func SolveDay11Part1() {
 }
 
 type Pebble struct {
-	Line []int
+	Line []int64
 }
 
 /*
@@ -37,7 +37,8 @@ type Pebble struct {
 - If none of the other rules apply, the stone is replaced by a new stone; the old stone's number multiplied by 2024 is engraved on the new stone.
 */
 func (p *Pebble) blink() {
-	for i, pebble := range p.Line {
+	for i := 0; i < len(p.Line); i++ {
+		pebble := p.Line[i]
 		if pebble == 0 {
 			p.Line[i] = 1
 		}
@@ -45,21 +46,31 @@ func (p *Pebble) blink() {
 			n := len(stringRep)
 			leftStone, _ := strconv.ParseInt(stringRep[:n], 10, 64)
 			rightStone, _ := strconv.ParseInt(stringRep[n:], 10, 64)
-			// shift array to the left and right
-
+			p.createSpaceAndInsertStones(leftStone, rightStone, i)
+			i += 1 // Skip the subsequent iteration, to count for in-place insertion
 		} else {
 			p.Line[i] = pebble * 2024
 		}
 	}
 }
 
-func checkEvenDigits(digits int) (bool, string) {
-	stringRep := strconv.Itoa(digits)
-	return len(stringRep)%2 == 0, stringRep
-}
-
 func (p *Pebble) stones() int {
 	return len(p.Line)
+}
+
+/*
+I'm tempted to shift everything off to the right, but then the outer loop is going to be messed up
+unless I can find some clever way of skipping an interation
+*/
+func (p *Pebble) createSpaceAndInsertStones(leftStone, rightstone int64, i int) {
+	p.Line = append(p.Line[:i], p.Line[i+1:]...)
+	p.Line[i] = leftStone
+	p.Line[i+1] = rightstone
+}
+
+func checkEvenDigits(digits int64) (bool, string) {
+	stringRep := strconv.Itoa(int(digits))
+	return len(stringRep)%2 == 0, stringRep
 }
 
 /*

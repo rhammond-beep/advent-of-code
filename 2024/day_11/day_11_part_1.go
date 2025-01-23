@@ -77,5 +77,5 @@ Define the contract for a mysterious plutonian entity
 */
 type Plutonian interface {
 	blink()      // Blink and you'll miss it
-	stones() int // How many magic stones are left to count
+	stones() int // How many magic stones are there
 }

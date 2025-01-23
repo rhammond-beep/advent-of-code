@@ -20,7 +20,7 @@ func SolveDay11Part1() {
 	puzzleInput := []int64{70949, 6183, 4, 3825336, 613971, 0, 15, 182}
 	pp = &Pebble{Line: puzzleInput}
 
-	for i := 0; i < 75; i++ {
+	for i := 0; i < 25; i++ {
 		pp.blink()
 	}
 

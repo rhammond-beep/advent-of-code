@@ -16,11 +16,11 @@ no matter how the stones change, their order is preserved, and they can stay on 
 */
 func SolveDay11Part1() {
 	var pp Plutonian
-	puzzleInput := []int64{0, 1, 10, 99, 999}
-	// puzzleInput := []int64{70949 6183 4 3825336 613971 0 15 182}
+	// puzzleInput := []int64{0, 1, 10, 99, 999}
+	puzzleInput := []int64{70949, 6183, 4, 3825336, 613971, 0, 15, 182}
 	pp = &Pebble{Line: puzzleInput}
 
-	for i := 0; i < 1; i++ {
+	for i := 0; i < 75; i++ {
 		pp.blink()
 	}
 
@@ -41,11 +41,10 @@ func (p *Pebble) blink() {
 		pebble := p.Line[i]
 		if pebble == 0 {
 			p.Line[i] = 1
-		}
-		if isEven, stringRep := checkEvenDigits(pebble); isEven {
+		} else if isEven, stringRep := checkEvenDigits(pebble); isEven {
 			n := len(stringRep)
-			leftStone, _ := strconv.ParseInt(stringRep[:n], 10, 64)
-			rightStone, _ := strconv.ParseInt(stringRep[n:], 10, 64)
+			leftStone, _ := strconv.ParseInt(stringRep[:n/2], 10, 64)
+			rightStone, _ := strconv.ParseInt(stringRep[n/2:], 10, 64)
 			p.createSpaceAndInsertStones(leftStone, rightStone, i)
 			i += 1 // Skip the subsequent iteration, to count for in-place insertion
 		} else {
@@ -63,7 +62,7 @@ I'm tempted to shift everything off to the right, but then the outer loop is goi
 unless I can find some clever way of skipping an interation
 */
 func (p *Pebble) createSpaceAndInsertStones(leftStone, rightstone int64, i int) {
-	p.Line = append(p.Line[:i], p.Line[i+1:]...)
+	p.Line = append(p.Line[:i+1], p.Line[i:]...)
 	p.Line[i] = leftStone
 	p.Line[i+1] = rightstone
 }

@@ -1,9 +1,7 @@
 package main
 
-import (
-	day11 "rupert-hammond-aoc/day_11"
-)
+import "rupert-hammond-aoc/day_8"
 
 func main() {
-	day11.SolveDay11Part1()
+	day_8.SolveDay8Part1()
 }

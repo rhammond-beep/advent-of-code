@@ -54,27 +54,55 @@ as a single lowercase, uppercase letter, or digit.
 an antinode occurs at any point that is perfectly in line with two antennas of the same frequency - but only when one of the antennas is
 twice as far away as the other.
 
-This means that for any pair of antennas with the the sane
+# This means that for any pair of antennas with the the sane
+
+can have overlapping frequencies/antena with antinodes, but not overlapping antinodes
 */
 func calculateAntinodes(cityMap []string) (antinodes int) {
 
-	antenaMap := make(map[Point]rune)
+	antenaTypeMap := make(map[Point]rune)
+	antenaLocationMap := make(map[rune][]Point)
+	antiNodeMap := make(map[Point]rune)
 
 	for i := 0; i < len(cityMap); i++ { // assume square array
 		for j := 0; j < len(cityMap); j++ {
-			if unicode.IsLetter(rune(cityMap[i][j])) {
-				antenaMap[Point{I: i, J: j}] = rune(cityMap[i][j])
+			if unicode.IsLetter(rune(cityMap[i][j])) || unicode.IsDigit(rune(cityMap[i][j])) {
+				antena := rune(cityMap[i][j])
+				antenaLocation := Point{I: i, J: j}
+
+				antenaPoints := antenaLocationMap[antena]
+				antenaPoints = append(antenaPoints, antenaLocation)
+				antenaLocationMap[antena] = antenaPoints
+
+				antenaTypeMap[antenaLocation] = antena
 			}
 		}
 	}
 
-	antinode := &Point{I: 1, J: 1}
-	point1 := &Point{I: 2, J: 2}
-	point2 := &Point{I: 3, J: 3}
+	// 	antinode := &Point{I: 1, J: 1}
+	// 	point1 := &Point{I: 2, J: 2}
+	// 	point2 := &Point{I: 3, J: 3}
+	//
+	// 	fmt.Printf("%v\n", isCandidatePointDoubleTheDistance(antinode, point1, point2))
 
-	fmt.Printf("%v\n", isCandidatePointDoubleTheDistance(antinode, point1, point2))
+	// Brute force each location
+	for i := 0; i < len(cityMap); i++ {
+		for j := 0; j < len(cityMap); j++ {
+			candidateAntinodeLocation := Point{I: i, J: j}
+			if _, present := antiNodeMap[candidateAntinodeLocation]; present {
+				continue
+			}
 
-	// check to see if each valid locatio
+			for _, antenaLocations := range antenaLocationMap {
+				for k := 0; k < len(antenaLocations)-1; k++ {
+					if isCandidatePointDoubleTheDistance(&candidateAntinodeLocation, &antenaLocations[k], &antenaLocations[k+1]) {
+						antiNodeMap[candidateAntinodeLocation] = '#'
+						antinodes += 1
+					}
+				}
+			}
+		}
+	}
 
 	return
 }
